@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArborLife — Neural Garden Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-dark: #060d08;
+  --bg-card: rgba(15, 30, 18, 0.6);
+  --green-primary: #00C853;
+  --green-dim: #1B5E20;
+  --green-glow: rgba(0, 200, 83, 0.3);
+  --gold: #FFD54F;
+  --gold-dim: rgba(255, 213, 79, 0.2);
+  --text-primary: #E8F5E9;
+  --text-secondary: #A5D6A7;
+  --text-muted: #66BB6A;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ---- NAV ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1rem 2rem;
+  background: rgba(6, 13, 8, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 200, 83, 0.1);
+  display: flex; justify-content: space-between; align-items: center;
+  transition: transform 0.35s ease;
+}
+nav.hidden { transform: translateY(-100%); }
+
+.nav-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 1.4rem;
+  background: linear-gradient(135deg, var(--green-primary), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;
+  font-weight: 500; transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+  background: var(--green-primary); transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--green-primary); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; }
+.nav-toggle span {
+  display: block; width: 24px; height: 2px; background: var(--text-primary);
+  margin: 5px 0; transition: 0.3s;
+}
+
+/* ---- HERO ---- */
+#hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center; padding: 2rem;
+}
+
+#particle-canvas {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+.hero-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700; line-height: 1.1;
+  background: linear-gradient(135deg, var(--green-primary) 0%, var(--gold) 50%, var(--green-primary) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s ease-in-out infinite;
+  margin-bottom: 1.5rem;
+}
+@keyframes shimmer {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+.hero-tagline {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: var(--text-secondary);
+  font-weight: 300; margin-bottom: 2.5rem;
+  max-width: 600px; margin-left: auto; margin-right: auto;
+}
+
+.cta-btn {
+  display: inline-block; padding: 1rem 2.5rem;
+  background: transparent;
+  border: 1px solid var(--green-primary);
+  color: var(--green-primary);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem; font-weight: 600;
+  text-decoration: none; border-radius: 50px;
+  transition: all 0.4s ease;
+  position: relative; overflow: hidden;
+}
+.cta-btn::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0;
+  background: var(--green-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+  z-index: -1;
+}
+.cta-btn:hover { color: var(--bg-dark); border-color: var(--green-primary); }
+.cta-btn:hover::before { width: 300px; height: 300px; }
+
+/* ---- SECTIONS COMMON ---- */
+section { padding: 6rem 2rem; }
+.section-container { max-width: 1100px; margin: 0 auto; }
+
+.section-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem; font-weight: 600;
+  color: var(--green-primary); text-transform: uppercase;
+  letter-spacing: 3px; margin-bottom: 1rem;
+}
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700; margin-bottom: 1.5rem;
+}
+
+/* ---- ABOUT ---- */
+#about .about-content {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+}
+.about-roles {
+  display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.about-roles span {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem; font-weight: 600;
+  color: var(--gold);
+}
+.about-roles span::after { content: ' ·'; color: var(--green-dim); }
+.about-roles span:last-child::after { content: ''; }
+.about-text { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; }
+
+.tree-ring-visual {
+  display: flex; justify-content: center; align-items: center;
+  position: relative; height: 300px;
+}
+.ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(0, 200, 83, 0.15);
+  animation: pulse-ring 4s ease-in-out infinite;
+}
+.ring:nth-child(1) { width: 80px; height: 80px; animation-delay: 0s; border-color: rgba(0, 200, 83, 0.4); }
+.ring:nth-child(2) { width: 140px; height: 140px; animation-delay: 0.3s; }
+.ring:nth-child(3) { width: 200px; height: 200px; animation-delay: 0.6s; }
+.ring:nth-child(4) { width: 260px; height: 260px; animation-delay: 0.9s; }
+.ring-center {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--green-primary);
+  box-shadow: 0 0 20px var(--green-glow);
+  position: absolute;
+}
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+/* ---- SOLUTIONS ---- */
+.solutions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+.solution-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(0, 200, 83, 0.1);
+  border-radius: 16px; padding: 2.5rem 2rem;
+  transition: all 0.4s ease;
+  position: relative; overflow: hidden;
+}
+.solution-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green-primary), transparent);
+  opacity: 0; transition: opacity 0.4s;
+}
+.solution-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0, 200, 83, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 200, 83, 0.1);
+}
+.solution-card:hover::before { opacity: 1; }
+
+.solution-icon {
+  width: 50px; height: 50px; border-radius: 12px;
+  background: rgba(0, 200, 83, 0.1);
+  display: flex; justify-content: center; align-items: center;
+  margin-bottom: 1.5rem; font-size: 1.5rem;
+}
+.solution-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.3rem; font-weight: 600; margin-bottom: 0.75rem;
+}
+.solution-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+
+/* ---- FEATURED WORK ---- */
+.work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem; }
+.work-card {
+  background: rgba(15, 30, 18, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 200, 83, 0.08);
+  border-radius: 16px; overflow: hidden;
+  transition: all 0.4s ease;
+}
+.work-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 200, 83, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+.work-card-image {
+  height: 200px;
+  background: linear-gradient(135deg, rgba(0, 200, 83, 0.1), rgba(255, 213, 79, 0.05));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: 0.85rem;
+  border-bottom: 1px solid rgba(0, 200, 83, 0.08);
+}
+.work-card-body { padding: 1.5rem; }
+.work-card-body h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem;
+}
+.work-card-body p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+.work-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.work-tags span {
+  font-size: 0.75rem; padding: 0.3rem 0.75rem;
+  border-radius: 20px; background: rgba(0, 200, 83, 0.1);
+  color: var(--green-primary); font-weight: 500;
+}
+
+/* ---- VISION ---- */
+#vision {
+  position: relative; text-align: center;
+  padding: 8rem 2rem;
+}
+.vision-quote {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-weight: 500; max-width: 750px;
+  margin: 0 auto 2rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+.vision-quote em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--green-primary), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tree SVG */
+.tree-svg {
+  margin-top: 3rem; opacity: 0.3;
+}
+
+/* ---- CONTACT ---- */
+#contact { text-align: center; }
+.contact-links {
+  display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;
+}
+.contact-link {
+  display: flex; align-items: center; gap: 0.5rem;
+  color: var(--text-secondary); text-decoration: none;
+  font-size: 1rem; transition: color 0.3s;
+  padding: 0.75rem 1.5rem; border-radius: 50px;
+  border: 1px solid rgba(0, 200, 83, 0.15);
+  transition: all 0.3s;
+}
+.contact-link:hover {
+  color: var(--green-primary);
+  border-color: var(--green-primary);
+  background: rgba(0, 200, 83, 0.05);
+}
+
+/* ---- FOOTER ---- */
+footer {
+  text-align: center; padding: 2rem;
+  border-top: 1px solid rgba(0, 200, 83, 0.08);
+  color: var(--text-muted); font-size: 0.85rem;
+}
+
+/* ---- SCROLL ANIMATION ---- */
+.fade-in {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: rgba(6, 13, 8, 0.95); padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(0, 200, 83, 0.1);
+  }
+  #about .about-content { grid-template-columns: 1fr; }
+  .tree-ring-visual { height: 200px; }
+  .solutions-grid { grid-template-columns: 1fr; }
+  .work-grid { grid-template-columns: 1fr; }
+  .contact-links { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">ArborLife</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#contact">Connect</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="particle-canvas"></canvas>
+  <div class="hero-content fade-in">
+    <h1 class="hero-title">ArborLife</h1>
+    <p class="hero-tagline">Growing solutions at the intersection of technology and humanity.</p>
+    <a href="#solutions" class="cta-btn">Explore Solutions</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-container">
+    <div class="about-content">
+      <div class="fade-in">
+        <span class="section-label">About</span>
+        <div class="about-roles">
+          <span>Builder</span>
+          <span>Collaborator</span>
+          <span>Aligner</span>
+        </div>
+        <p class="about-text">
+          Building technology that serves humanity isn't just a mission statement — it's a practice.
+          From enterprise AI solutions that create real business value, to open source tools that
+          promote collaboration and alignment, every project grows from the same root: the belief
+          that the best technology empowers everyone it touches.
+        </p>
+      </div>
+      <div class="tree-ring-visual fade-in">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring-center"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="section-container">
+    <span class="section-label fade-in">What I Build</span>
+    <h2 class="section-title fade-in">Solutions That Grow</h2>
+    <div class="solutions-grid">
+      <div class="solution-card fade-in">
+        <div class="solution-icon">&#9752;</div>
+        <h3>Commercial Solutions</h3>
+        <p>Enterprise-grade AI solutions designed to create real value. From concept through deployment, building tools that drive outcomes.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-icon">&#9741;</div>
+        <h3>Open Source & AI Alignment</h3>
+        <p>Contributing to collaborative AI development that benefits everyone. Tools, frameworks, and research promoting responsible innovation.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-icon">&#9883;</div>
+        <h3>Proof of Concepts</h3>
+        <p>Experimental builds exploring what's possible at the frontier. Rapid prototypes that test ideas and push boundaries.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED WORK -->
+<section id="work">
+  <div class="section-container">
+    <span class="section-label fade-in">Portfolio</span>
+    <h2 class="section-title fade-in">Featured Work</h2>
+    <div class="work-grid">
+      <div class="work-card fade-in">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>AI Pipeline Orchestrator</h3>
+          <p>End-to-end ML pipeline management for enterprise data teams.</p>
+          <div class="work-tags">
+            <span>AI</span><span>Enterprise</span><span>Python</span>
+          </div>
+        </div>
+      </div>
+      <div class="work-card fade-in">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>Collaborative Alignment Toolkit</h3>
+          <p>Open source framework for multi-stakeholder AI alignment research.</p>
+          <div class="work-tags">
+            <span>Open Source</span><span>AI Alignment</span>
+          </div>
+        </div>
+      </div>
+      <div class="work-card fade-in">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>Real-time Sentiment Engine</h3>
+          <p>Live NLP analysis with streaming visualization dashboard.</p>
+          <div class="work-tags">
+            <span>NLP</span><span>POC</span><span>React</span>
+          </div>
+        </div>
+      </div>
+      <div class="work-card fade-in">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>Decentralized Knowledge Graph</h3>
+          <p>Distributed system for shared, verifiable knowledge representation.</p>
+          <div class="work-tags">
+            <span>Distributed Systems</span><span>Open Source</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="section-container fade-in">
+    <span class="section-label">Vision</span>
+    <p class="vision-quote">
+      "Technology grows best when <em>rooted in collaboration</em>."
+    </p>
+    <svg class="tree-svg" width="120" height="160" viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60 160 L60 80" stroke="#00C853" stroke-width="2" opacity="0.6"/>
+      <path d="M60 80 L30 40" stroke="#00C853" stroke-width="1.5" opacity="0.5"/>
+      <path d="M60 80 L90 40" stroke="#00C853" stroke-width="1.5" opacity="0.5"/>
+      <path d="M60 100 L40 65" stroke="#00C853" stroke-width="1" opacity="0.4"/>
+      <path d="M60 100 L80 65" stroke="#00C853" stroke-width="1" opacity="0.4"/>
+      <path d="M30 40 L15 15" stroke="#00C853" stroke-width="1" opacity="0.3"/>
+      <path d="M30 40 L45 20" stroke="#00C853" stroke-width="1" opacity="0.3"/>
+      <path d="M90 40 L75 20" stroke="#00C853" stroke-width="1" opacity="0.3"/>
+      <path d="M90 40 L105 15" stroke="#00C853" stroke-width="1" opacity="0.3"/>
+      <circle cx="15" cy="15" r="4" fill="#00C853" opacity="0.3"/>
+      <circle cx="45" cy="20" r="3" fill="#FFD54F" opacity="0.3"/>
+      <circle cx="75" cy="20" r="3" fill="#00C853" opacity="0.3"/>
+      <circle cx="105" cy="15" r="4" fill="#FFD54F" opacity="0.3"/>
+      <circle cx="40" cy="65" r="3" fill="#FFD54F" opacity="0.25"/>
+      <circle cx="80" cy="65" r="3" fill="#00C853" opacity="0.25"/>
+    </svg>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-container fade-in">
+    <span class="section-label">Connect</span>
+    <h2 class="section-title">Let's Grow Something Together</h2>
+    <div class="contact-links">
+      <a href="https://github.com/sagearbor" class="contact-link" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="#" class="contact-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        LinkedIn
+      </a>
+      <a href="mailto:hello@arborlife.dev" class="contact-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z"/></svg>
+        Email
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 ArborLife. Growing solutions, one branch at a time.</p>
+</footer>
+
+<script>
+// ---- PARTICLE NETWORK ----
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const PARTICLE_COUNT = 80;
+const CONNECTION_DIST = 150;
+
+function resize() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5) * 0.5;
+    this.vy = (Math.random() - 0.5) * 0.5;
+    this.radius = Math.random() * 2 + 1;
+    this.opacity = Math.random() * 0.5 + 0.2;
+    this.isGold = Math.random() > 0.85;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    const color = this.isGold ? `rgba(255, 213, 79, ${this.opacity})` : `rgba(0, 200, 83, ${this.opacity})`;
+    ctx.fillStyle = color;
+    ctx.shadowColor = this.isGold ? 'rgba(255, 213, 79, 0.3)' : 'rgba(0, 200, 83, 0.3)';
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update();
+    particles[i].draw();
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < CONNECTION_DIST) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        const opacity = (1 - dist / CONNECTION_DIST) * 0.15;
+        ctx.strokeStyle = `rgba(0, 200, 83, ${opacity})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ---- NAV SCROLL HIDE/SHOW ----
+let lastScroll = 0;
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  const current = window.scrollY;
+  if (current > lastScroll && current > 80) {
+    navbar.classList.add('hidden');
+  } else {
+    navbar.classList.remove('hidden');
+  }
+  lastScroll = current;
+});
+
+// ---- MOBILE NAV ----
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ---- SCROLL REVEAL ----
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Make hero visible immediately
+document.querySelector('#hero .fade-in').classList.add('visible');
+</script>
+
+</body>
+</html>

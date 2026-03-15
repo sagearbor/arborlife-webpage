@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArborLife — Clean Showcase Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FAFAF8;
+  --bg-white: #FFFFFF;
+  --green-deep: #1B5E20;
+  --green-sage: #E8F5E9;
+  --green-mid: #4CAF50;
+  --warm-brown: #8D6E63;
+  --text-dark: #1A2E1C;
+  --text-body: #455A64;
+  --text-light: #78909C;
+  --border: #E0E0E0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-body);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; color: var(--text-dark); }
+
+/* ---- NAV ---- */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--green-deep);
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  color: var(--text-body); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--green-deep); }
+
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+.nav-toggle svg { width: 24px; height: 24px; color: var(--text-dark); }
+
+/* ---- HERO ---- */
+#hero {
+  min-height: 80vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 6rem 2rem;
+  position: relative; overflow: hidden;
+}
+
+/* Abstract tree background */
+.hero-tree {
+  position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+  opacity: 0.06; z-index: 0;
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+.hero-title {
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 700; line-height: 1.15;
+  color: var(--green-deep);
+  margin-bottom: 1.5rem;
+}
+
+.hero-tagline {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  color: var(--text-body);
+  font-weight: 300; margin-bottom: 2.5rem;
+  max-width: 500px; margin-left: auto; margin-right: auto;
+}
+
+.btn-primary {
+  display: inline-block; padding: 0.85rem 2rem;
+  color: var(--green-deep); text-decoration: none;
+  font-weight: 600; font-size: 0.95rem;
+  position: relative; transition: color 0.3s;
+}
+.btn-primary::after {
+  content: ''; position: absolute;
+  bottom: 4px; left: 50%; width: 0; height: 2px;
+  background: var(--green-deep);
+  transition: width 0.4s ease, left 0.4s ease;
+}
+.btn-primary:hover::after { width: 100%; left: 0; }
+.btn-primary .arrow { display: inline-block; transition: transform 0.3s; margin-left: 0.5rem; }
+.btn-primary:hover .arrow { transform: translateX(4px); }
+
+/* ---- SECTIONS COMMON ---- */
+section { padding: 5rem 2rem; }
+.section-container { max-width: 1050px; margin: 0 auto; }
+
+.section-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--green-mid); text-transform: uppercase;
+  letter-spacing: 2.5px; margin-bottom: 0.75rem;
+}
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  margin-bottom: 1rem;
+}
+.section-subtitle {
+  color: var(--text-light);
+  max-width: 550px; font-size: 1.05rem;
+}
+
+/* ---- ABOUT ---- */
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1.3fr;
+  gap: 4rem; align-items: center; margin-top: 3rem;
+}
+.about-image {
+  aspect-ratio: 4/5;
+  background: var(--green-sage);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-light); font-size: 0.85rem;
+  border: 1px solid var(--border);
+}
+.about-text h3 {
+  font-size: 1.6rem; margin-bottom: 1rem;
+}
+.about-text p { margin-bottom: 1.5rem; font-size: 1.02rem; }
+.about-focuses {
+  display: flex; flex-direction: column; gap: 0.75rem;
+}
+.focus-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.95rem; color: var(--text-dark); font-weight: 500;
+}
+.focus-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green-mid); flex-shrink: 0;
+}
+
+/* ---- WHAT I DO ---- */
+#whatido { background: var(--bg-white); }
+.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+.service-card {
+  padding: 2.5rem 2rem;
+  border-radius: 12px; background: var(--bg);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--green-deep);
+  transition: all 0.3s ease;
+}
+.service-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.service-icon {
+  font-size: 1.8rem; margin-bottom: 1.25rem;
+  display: block;
+}
+.service-card h3 {
+  font-size: 1.2rem; margin-bottom: 0.75rem;
+}
+.service-card p { font-size: 0.92rem; color: var(--text-body); line-height: 1.7; }
+
+/* ---- SELECTED WORK ---- */
+.work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.work-card {
+  border-radius: 12px; overflow: hidden;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.work-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+.work-card-image {
+  height: 200px; background: var(--green-sage);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-light); font-size: 0.85rem;
+  position: relative; overflow: hidden;
+}
+.work-card-image::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(27, 94, 32, 0.04);
+  transition: background 0.3s;
+}
+.work-card:hover .work-card-image::after { background: rgba(27, 94, 32, 0.08); }
+.work-card-body { padding: 1.5rem; }
+.work-card-body h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+.work-card-body p { font-size: 0.88rem; color: var(--text-light); margin-bottom: 0.75rem; }
+.tag-pill {
+  display: inline-block; font-size: 0.72rem; font-weight: 600;
+  padding: 0.25rem 0.7rem; border-radius: 20px;
+  background: var(--green-sage); color: var(--green-deep);
+  margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* ---- APPROACH ---- */
+#approach { background: var(--bg-white); }
+.approach-flow {
+  display: flex; justify-content: center; align-items: flex-start;
+  gap: 0; margin-top: 4rem; position: relative;
+}
+.approach-step {
+  text-align: center; flex: 1; max-width: 250px; padding: 0 1.5rem;
+  position: relative;
+}
+.approach-step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--green-sage); color: var(--green-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; font-weight: 700;
+  margin: 0 auto 1.25rem;
+  border: 2px solid var(--green-deep);
+}
+.approach-step h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.approach-step p { font-size: 0.9rem; color: var(--text-light); }
+.approach-connector {
+  position: absolute; top: 24px; left: calc(50% + 40px); width: calc(100% - 80px);
+  height: 2px; background: var(--border);
+}
+.approach-step:last-child .approach-connector { display: none; }
+
+/* ---- CONTACT ---- */
+#contact { text-align: center; padding: 6rem 2rem; }
+#contact h2 { margin-bottom: 0.75rem; }
+#contact p { color: var(--text-light); margin-bottom: 2rem; }
+
+.contact-row { display: flex; justify-content: center; gap: 1.5rem; }
+.contact-link {
+  display: flex; align-items: center; gap: 0.5rem;
+  color: var(--text-body); text-decoration: none;
+  font-size: 0.95rem; font-weight: 500;
+  transition: color 0.3s;
+}
+.contact-link:hover { color: var(--green-deep); }
+.contact-link svg { width: 18px; height: 18px; }
+
+/* ---- FOOTER ---- */
+footer {
+  text-align: center; padding: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--text-light);
+}
+
+/* ---- SCROLL ANIM ---- */
+.fade-up {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--bg-white); padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1.5rem;
+  }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-image { max-height: 300px; }
+  .service-grid { grid-template-columns: 1fr; }
+  .work-grid { grid-template-columns: 1fr; }
+  .approach-flow { flex-direction: column; align-items: center; gap: 2rem; }
+  .approach-connector { display: none !important; }
+  .contact-row { flex-direction: column; align-items: center; }
+  .hero-tree { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">ArborLife</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- Abstract geometric tree -->
+  <svg class="hero-tree" width="400" height="500" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="200" y1="500" x2="200" y2="250" stroke="#1B5E20" stroke-width="3"/>
+    <line x1="200" y1="250" x2="120" y2="140" stroke="#1B5E20" stroke-width="2"/>
+    <line x1="200" y1="250" x2="280" y2="140" stroke="#1B5E20" stroke-width="2"/>
+    <line x1="200" y1="320" x2="140" y2="220" stroke="#1B5E20" stroke-width="1.5"/>
+    <line x1="200" y1="320" x2="260" y2="220" stroke="#1B5E20" stroke-width="1.5"/>
+    <line x1="120" y1="140" x2="70" y2="60" stroke="#1B5E20" stroke-width="1"/>
+    <line x1="120" y1="140" x2="160" y2="70" stroke="#1B5E20" stroke-width="1"/>
+    <line x1="280" y1="140" x2="240" y2="70" stroke="#1B5E20" stroke-width="1"/>
+    <line x1="280" y1="140" x2="330" y2="60" stroke="#1B5E20" stroke-width="1"/>
+    <circle cx="70" cy="60" r="20" fill="#E8F5E9"/>
+    <circle cx="160" cy="70" r="16" fill="#E8F5E9"/>
+    <circle cx="240" cy="70" r="16" fill="#E8F5E9"/>
+    <circle cx="330" cy="60" r="20" fill="#E8F5E9"/>
+    <circle cx="140" cy="220" r="14" fill="#E8F5E9"/>
+    <circle cx="260" cy="220" r="14" fill="#E8F5E9"/>
+  </svg>
+
+  <div class="hero-content fade-up">
+    <h1 class="hero-title">ArborLife</h1>
+    <p class="hero-tagline">Building technology rooted in purpose.</p>
+    <a href="#work" class="btn-primary">View Work <span class="arrow">&rarr;</span></a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-container">
+    <div class="about-grid">
+      <div class="about-image fade-up">Photo / Portrait</div>
+      <div class="fade-up">
+        <span class="section-label">About</span>
+        <div class="about-text">
+          <h3>Building at the intersection of AI, business, and social impact.</h3>
+          <p>
+            I design and build AI-powered solutions — from commercial products that drive
+            real business outcomes to open source tools that promote responsible, collaborative
+            development. Every project starts from the same question: how can this create
+            genuine value?
+          </p>
+        </div>
+        <div class="about-focuses">
+          <div class="focus-item"><div class="focus-dot"></div> Enterprise AI & data solutions</div>
+          <div class="focus-item"><div class="focus-dot"></div> Open source AI alignment tools</div>
+          <div class="focus-item"><div class="focus-dot"></div> Rapid prototyping & POCs</div>
+          <div class="focus-item"><div class="focus-dot"></div> AI strategy consulting</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT I DO -->
+<section id="whatido">
+  <div class="section-container">
+    <span class="section-label fade-up">What I Do</span>
+    <h2 class="section-title fade-up">Three ways I create value</h2>
+    <div class="service-grid">
+      <div class="service-card fade-up">
+        <span class="service-icon">&#9670;</span>
+        <h3>Commercial Solutions</h3>
+        <p>Designing AI-powered tools that drive business outcomes. From strategy through deployment — products that work and scale.</p>
+      </div>
+      <div class="service-card fade-up">
+        <span class="service-icon">&#9671;</span>
+        <h3>Open Source & Alignment</h3>
+        <p>Contributing to the ecosystem of responsible, collaborative AI. Frameworks, tools, and research that benefit everyone.</p>
+      </div>
+      <div class="service-card fade-up">
+        <span class="service-icon">&#9674;</span>
+        <h3>Proof of Concepts</h3>
+        <p>Rapid prototyping to explore emerging possibilities. Testing ideas quickly and learning what the frontier looks like today.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELECTED WORK -->
+<section id="work">
+  <div class="section-container">
+    <span class="section-label fade-up">Selected Work</span>
+    <h2 class="section-title fade-up">Recent projects</h2>
+    <p class="section-subtitle fade-up">A selection of commercial, open source, and experimental work.</p>
+    <div class="work-grid">
+      <div class="work-card fade-up">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>AI Pipeline Orchestrator</h3>
+          <p>End-to-end ML pipeline management for enterprise data teams.</p>
+          <span class="tag-pill">Enterprise</span><span class="tag-pill">AI</span>
+        </div>
+      </div>
+      <div class="work-card fade-up">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>Collaborative Alignment Toolkit</h3>
+          <p>Open source framework for multi-stakeholder AI alignment.</p>
+          <span class="tag-pill">Open Source</span><span class="tag-pill">Alignment</span>
+        </div>
+      </div>
+      <div class="work-card fade-up">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>Real-time Sentiment Engine</h3>
+          <p>Live NLP analysis with streaming visualization dashboard.</p>
+          <span class="tag-pill">POC</span><span class="tag-pill">NLP</span>
+        </div>
+      </div>
+      <div class="work-card fade-up">
+        <div class="work-card-image">Project Screenshot</div>
+        <div class="work-card-body">
+          <h3>Knowledge Graph Explorer</h3>
+          <p>Distributed knowledge representation and discovery tool.</p>
+          <span class="tag-pill">Open Source</span><span class="tag-pill">Data</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section id="approach">
+  <div class="section-container">
+    <div style="text-align:center;">
+      <span class="section-label fade-up">Approach</span>
+      <h2 class="section-title fade-up">How I work</h2>
+    </div>
+    <div class="approach-flow">
+      <div class="approach-step fade-up">
+        <div class="approach-connector"></div>
+        <div class="approach-step-num">1</div>
+        <h3>Understand</h3>
+        <p>Deep dive into the problem space. What matters? What's the real constraint? What does success look like?</p>
+      </div>
+      <div class="approach-step fade-up">
+        <div class="approach-connector"></div>
+        <div class="approach-step-num">2</div>
+        <h3>Build</h3>
+        <p>Rapid, iterative development. Working software early, constant feedback loops, no over-engineering.</p>
+      </div>
+      <div class="approach-step fade-up">
+        <div class="approach-step-num">3</div>
+        <h3>Align</h3>
+        <p>Ensure the solution serves all stakeholders. Ethical, sustainable, and built to grow with you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-container fade-up">
+    <h2>Let's build something meaningful.</h2>
+    <p>Open to conversations about projects, collaborations, and ideas worth exploring.</p>
+    <div class="contact-row">
+      <a href="https://github.com/sagearbor" class="contact-link" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="#" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        LinkedIn
+      </a>
+      <a href="mailto:hello@arborlife.dev" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z"/></svg>
+        Email
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 ArborLife</p>
+</footer>
+
+<script>
+// ---- MOBILE NAV ----
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ---- SCROLL REVEAL ----
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Reveal hero immediately
+document.querySelectorAll('#hero .fade-up').forEach(el => el.classList.add('visible'));
+</script>
+
+</body>
+</html>
