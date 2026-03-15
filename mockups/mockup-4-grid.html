@@ -3,354 +3,614 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sage Arbor — Work</title>
+<title>Sage Arbor — AI Developer & Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0d0d0f;
-    --surface: #14141a;
-    --border: #2a2a38;
-    --text: #e8e8f0;
-    --muted: #7070a0;
-    --c1: #4ade80; /* alignment - green */
-    --c2: #60a5fa; /* commercial - blue */
-    --c3: #f472b6; /* products - pink */
-    --c4: #fb923c; /* community - orange */
-  }
-  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0A0A0F;
+  --surface: rgba(18,18,28,0.6);
+  --violet: #7C4DFF;
+  --violet-dim: rgba(124,77,255,0.15);
+  --cyan: #00E5FF;
+  --cyan-dim: rgba(0,229,255,0.15);
+  --coral: #FF6E40;
+  --coral-dim: rgba(255,110,64,0.15);
+  --lime: #A3E635;
+  --lime-dim: rgba(163,230,53,0.15);
+  --text: #F0F0F5;
+  --muted: #9E9EB8;
+  --faint: #6B6B80;
+  --glass: rgba(18,18,28,0.5);
+  --glass-border: rgba(255,255,255,0.06);
+}
+html { scroll-behavior: smooth; }
+body { font-family:'Space Grotesk',-apple-system,sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; line-height:1.6; }
 
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.6rem 1.4rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    height: 48px;
-  }
-  header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.04em; }
-  header h1 span.tagline { font-weight: 300; color: var(--muted); font-size: 0.85rem; margin-left: 0.5rem; }
-  .version {
-    font-size: 0.72rem; color: var(--muted); cursor: pointer;
-    border: 1px solid var(--border); padding: 2px 7px; border-radius: 99px;
-    transition: color 0.2s, border-color 0.2s;
-    user-select: none;
-  }
-  .version:hover { color: var(--text); border-color: var(--muted); }
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:0.85rem 2rem;
+  background:rgba(10,10,15,0.7);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--glass-border);
+  display:flex; justify-content:space-between; align-items:center;
+  transition:transform 0.35s ease;
+}
+nav.hidden { transform:translateY(-100%); }
+.nav-logo { font-weight:800; font-size:1.3rem; color:var(--text); text-decoration:none; transition:all 0.3s; }
+.nav-logo:hover { background:linear-gradient(135deg,var(--violet),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.nav-right { display:flex; align-items:center; gap:2rem; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { color:var(--muted); text-decoration:none; font-size:0.9rem; font-weight:500; transition:color 0.3s; }
+.nav-links a:hover { color:var(--text); }
+.version-badge {
+  font-size:0.7rem; color:var(--faint); cursor:pointer;
+  border:1px solid rgba(255,255,255,0.1); padding:3px 9px; border-radius:99px;
+  transition:color 0.2s,border-color 0.2s; user-select:none;
+  font-family:monospace; letter-spacing:0.05em;
+}
+.version-badge:hover { color:var(--muted); border-color:var(--faint); }
+.nav-toggle { display:none; background:none; border:none; cursor:pointer; }
+.nav-toggle span { display:block; width:24px; height:2px; background:var(--text); margin:5px 0; transition:0.3s; }
 
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    height: calc(100vh - 48px);
-  }
-  .quadrant {
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    overflow: hidden;
-    padding: 0.8rem 1rem;
-  }
-  .quadrant-header {
-    display: flex; align-items: center; gap: 0.5rem;
-    margin-bottom: 0.6rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .quadrant-header h2 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
-  .q1 .dot { background: var(--c1); }
-  .q2 .dot { background: var(--c2); }
-  .q3 .dot { background: var(--c3); }
-  .q4 .dot { background: var(--c4); }
-  .q1 .quadrant-header h2 { color: var(--c1); }
-  .q2 .quadrant-header h2 { color: var(--c2); }
-  .q3 .quadrant-header h2 { color: var(--c3); }
-  .q4 .quadrant-header h2 { color: var(--c4); }
+/* HERO */
+#hero {
+  position:relative; min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  text-align:center; padding:2rem; overflow:hidden;
+}
+.gradient-mesh { position:absolute; inset:0; z-index:0; overflow:hidden; }
+.mesh-blob { position:absolute; border-radius:50%; filter:blur(80px); animation:float 12s ease-in-out infinite; }
+.mesh-blob:nth-child(1) { width:500px; height:500px; top:-10%; left:-10%; background:rgba(124,77,255,0.2); animation-delay:0s; }
+.mesh-blob:nth-child(2) { width:400px; height:400px; top:30%; right:-5%; background:rgba(0,229,255,0.15); animation-delay:-4s; }
+.mesh-blob:nth-child(3) { width:350px; height:350px; bottom:-5%; left:30%; background:rgba(163,230,53,0.1); animation-delay:-8s; }
+@keyframes float { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(30px,-20px) scale(1.05);} 66%{transform:translate(-20px,20px) scale(0.95);} }
+.grid-overlay { position:absolute; inset:0; z-index:1; background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px); background-size:60px 60px; }
+.hero-content { position:relative; z-index:2; max-width:900px; }
+.hero-eyebrow { font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:3px; color:var(--cyan); margin-bottom:1rem; }
+.hero-title { font-size:clamp(3.5rem,10vw,7rem); font-weight:800; line-height:1.05; margin-bottom:1.5rem; letter-spacing:-2px; }
+.hero-title em { font-style:normal; background:linear-gradient(135deg,var(--violet),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero-tagline { font-size:clamp(1rem,2.5vw,1.35rem); color:var(--muted); font-weight:400; margin-bottom:3rem; max-width:600px; margin-left:auto; margin-right:auto; }
+.btn-group { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.btn-glow { display:inline-block; padding:0.9rem 2.2rem; font-weight:700; font-size:0.95rem; color:var(--text); text-decoration:none; border-radius:50px; background:var(--glass); border:1px solid var(--glass-border); position:relative; overflow:hidden; transition:all 0.4s; }
+.btn-glow::before { content:''; position:absolute; inset:-2px; background:linear-gradient(135deg,var(--violet),var(--cyan)); border-radius:52px; z-index:-1; opacity:0; transition:opacity 0.4s; }
+.btn-glow:hover::before { opacity:1; }
+.btn-glow:hover { border-color:transparent; transform:translateY(-2px); }
+.btn-ghost { display:inline-block; padding:0.9rem 2.2rem; font-weight:700; font-size:0.95rem; color:var(--muted); text-decoration:none; border-radius:50px; border:1px solid var(--glass-border); transition:all 0.3s; }
+.btn-ghost:hover { color:var(--text); border-color:rgba(255,255,255,0.15); transform:translateY(-2px); }
 
-  .cards { display: flex; flex-direction: column; gap: 0.35rem; overflow-y: auto; flex: 1; }
-  .cards::-webkit-scrollbar { width: 3px; }
-  .cards::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+/* STATS */
+#stats { padding:3rem 2rem; background:var(--glass); backdrop-filter:blur(20px); border-top:1px solid var(--glass-border); border-bottom:1px solid var(--glass-border); }
+.stats-grid { max-width:900px; margin:0 auto; display:flex; justify-content:space-around; text-align:center; gap:1rem; flex-wrap:wrap; }
+.stat-item h3 { font-size:2.5rem; font-weight:800; background:linear-gradient(135deg,var(--violet),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:0.25rem; }
+.stat-item p { color:var(--faint); font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 
-  .card {
-    display: flex; align-items: flex-start; gap: 0.5rem;
-    padding: 0.45rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    text-decoration: none;
-    color: var(--text);
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .card:hover { border-color: var(--muted); background: #1c1c28; }
-  .card-icon { font-size: 1rem; flex-shrink: 0; line-height: 1.4; }
-  .card-text { display: flex; flex-direction: column; min-width: 0; }
-  .card-name { font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-desc { font-size: 0.68rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+/* SECTION COMMON */
+section { padding:5rem 2rem; }
+.section-container { max-width:1200px; margin:0 auto; }
+.section-label { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:3px; margin-bottom:0.6rem; display:block; }
+.label-violet { color:var(--violet); }
+.label-cyan { color:var(--cyan); }
+.label-coral { color:var(--coral); }
+.label-lime { color:var(--lime); }
+.section-title { font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:800; margin-bottom:0.5rem; letter-spacing:-0.5px; }
+.section-desc { color:var(--muted); font-size:0.95rem; max-width:600px; margin-bottom:2.5rem; }
 
-  /* Password modal */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-    align-items: center; justify-content: center; z-index: 100;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.5rem; width: 300px;
-    display: flex; flex-direction: column; gap: 0.8rem;
-  }
-  .modal h3 { font-size: 0.9rem; color: var(--muted); text-align: center; }
-  .modal input {
-    background: var(--bg); border: 1px solid var(--border); color: var(--text);
-    padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.9rem; width: 100%;
-    outline: none;
-  }
-  .modal input:focus { border-color: var(--muted); }
-  .modal button {
-    background: #2a2a3a; border: 1px solid var(--border); color: var(--text);
-    padding: 0.45rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
-    transition: background 0.15s;
-  }
-  .modal button:hover { background: #3a3a50; }
-  .modal .error { font-size: 0.75rem; color: #f87171; text-align: center; display: none; }
+/* FOUR PILLARS */
+.pillars-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; margin-top:2.5rem; }
+.pillar-card { background:var(--glass); backdrop-filter:blur(12px); border:1px solid var(--glass-border); border-radius:16px; padding:2rem 1.5rem; position:relative; overflow:hidden; transition:all 0.4s; }
+.pillar-card::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; border-radius:3px; }
+.pillar-card.pc-violet::before { background:linear-gradient(180deg,var(--violet),transparent); }
+.pillar-card.pc-cyan::before { background:linear-gradient(180deg,var(--cyan),transparent); }
+.pillar-card.pc-coral::before { background:linear-gradient(180deg,var(--coral),transparent); }
+.pillar-card.pc-lime::before { background:linear-gradient(180deg,var(--lime),transparent); }
+.pillar-card:hover { transform:translateY(-5px); border-color:rgba(255,255,255,0.1); }
+.pillar-card.pc-violet:hover { box-shadow:0 16px 50px rgba(124,77,255,0.15); }
+.pillar-card.pc-cyan:hover { box-shadow:0 16px 50px rgba(0,229,255,0.1); }
+.pillar-card.pc-coral:hover { box-shadow:0 16px 50px rgba(255,110,64,0.1); }
+.pillar-card.pc-lime:hover { box-shadow:0 16px 50px rgba(163,230,53,0.1); }
+.pillar-icon { font-size:2rem; margin-bottom:0.75rem; }
+.pillar-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:0.5rem; }
+.pc-violet .pillar-label { color:var(--violet); }
+.pc-cyan .pillar-label { color:var(--cyan); }
+.pc-coral .pillar-label { color:var(--coral); }
+.pc-lime .pillar-label { color:var(--lime); }
+.pillar-card h3 { font-size:1.1rem; font-weight:700; margin-bottom:0.5rem; }
+.pillar-card p { color:var(--muted); font-size:0.82rem; line-height:1.6; }
+
+/* PROJECTS */
+.cat-section { padding:4rem 2rem; }
+.cat-section:nth-child(even) { background:rgba(255,255,255,0.01); }
+.project-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:2rem; }
+.project-card { background:var(--glass); backdrop-filter:blur(12px); border:1px solid var(--glass-border); border-radius:14px; overflow:hidden; transition:all 0.4s; text-decoration:none; color:var(--text); display:flex; flex-direction:column; }
+.project-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.1); }
+.project-stripe { height:3px; }
+.ps-violet { background:linear-gradient(90deg,var(--violet),transparent); }
+.ps-cyan { background:linear-gradient(90deg,var(--cyan),transparent); }
+.ps-coral { background:linear-gradient(90deg,var(--coral),transparent); }
+.ps-lime { background:linear-gradient(90deg,var(--lime),transparent); }
+.project-body { padding:1.25rem; flex:1; display:flex; flex-direction:column; }
+.project-icon { font-size:1.5rem; margin-bottom:0.5rem; }
+.project-body h3 { font-size:0.95rem; font-weight:700; margin-bottom:0.35rem; }
+.project-body p { color:var(--muted); font-size:0.78rem; line-height:1.5; flex:1; margin-bottom:0.75rem; }
+.badge { font-size:0.65rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:6px; display:inline-block; }
+.badge-violet { background:var(--violet-dim); color:var(--violet); }
+.badge-cyan { background:var(--cyan-dim); color:var(--cyan); }
+.badge-coral { background:var(--coral-dim); color:var(--coral); }
+.badge-lime { background:var(--lime-dim); color:var(--lime); }
+
+/* CTA */
+#cta { text-align:center; padding:8rem 2rem; }
+.cta-heading { font-size:clamp(2rem,5vw,3.5rem); font-weight:800; margin-bottom:2rem; letter-spacing:-1px; }
+.cta-heading em { font-style:normal; background:linear-gradient(135deg,var(--violet),var(--cyan),var(--coral)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.cta-buttons { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.btn-filled { padding:1rem 2.5rem; border-radius:50px; background:linear-gradient(135deg,var(--violet),var(--cyan)); color:var(--bg); font-weight:700; font-size:1rem; text-decoration:none; transition:all 0.3s; border:none; display:inline-block; }
+.btn-filled:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,77,255,0.3); }
+.btn-outline { padding:1rem 2.5rem; border-radius:50px; background:transparent; border:1px solid var(--glass-border); color:var(--text); font-weight:700; font-size:1rem; text-decoration:none; transition:all 0.3s; display:inline-block; }
+.btn-outline:hover { border-color:rgba(255,255,255,0.2); transform:translateY(-2px); }
+
+/* FOOTER */
+footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--glass-border); }
+.footer-links { display:flex; gap:2rem; justify-content:center; margin-bottom:1.5rem; }
+.footer-links a { color:var(--faint); transition:color 0.3s; text-decoration:none; }
+.footer-links a:hover { color:var(--text); }
+.footer-links svg { width:22px; height:22px; }
+footer p { color:var(--faint); font-size:0.8rem; }
+
+/* SCROLL REVEAL */
+.fade-in { opacity:0; transform:translateY(30px); transition:opacity 0.7s ease,transform 0.7s ease; }
+.fade-in.visible { opacity:1; transform:translateY(0); }
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); align-items:center; justify-content:center; z-index:200; }
+.modal-overlay.open { display:flex; }
+.modal { background:#14141a; border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:2rem; width:320px; display:flex; flex-direction:column; gap:1rem; }
+.modal h3 { font-size:1rem; color:var(--muted); text-align:center; }
+.modal input { background:var(--bg); border:1px solid rgba(255,255,255,0.08); color:var(--text); padding:0.6rem 0.9rem; border-radius:8px; font-size:0.9rem; width:100%; outline:none; font-family:inherit; }
+.modal input:focus { border-color:var(--faint); }
+.modal button { background:#1e1e2e; border:1px solid rgba(255,255,255,0.08); color:var(--text); padding:0.55rem; border-radius:8px; cursor:pointer; font-size:0.9rem; font-family:inherit; transition:background 0.15s; }
+.modal button:hover { background:#2a2a40; }
+.modal .error { font-size:0.75rem; color:#f87171; text-align:center; display:none; }
+
+/* RESPONSIVE */
+@media(max-width:900px) {
+  .pillars-grid { grid-template-columns:repeat(2,1fr); }
+  .project-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:600px) {
+  .nav-links { display:none; }
+  .nav-toggle { display:block; }
+  .nav-links.open { display:flex; flex-direction:column; position:absolute; top:100%; left:0; right:0; background:rgba(10,10,15,0.97); backdrop-filter:blur(24px); padding:1.5rem 2rem; border-bottom:1px solid var(--glass-border); }
+  .pillars-grid { grid-template-columns:1fr; }
+  .project-grid { grid-template-columns:1fr; }
+  .stats-grid { flex-direction:column; gap:2rem; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Sage Arbor <span class="tagline">— AI Developer & Builder</span></h1>
-  <span class="version" id="versionBtn" title="Admin">v0.1.0</span>
-</header>
+<nav id="navbar">
+  <a href="#" class="nav-logo">Sage Arbor</a>
+  <div class="nav-right">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#pillars">Focus Areas</a></li>
+      <li><a href="#alignment">Alignment</a></li>
+      <li><a href="#commercial">Commercial</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="#cta">Connect</a></li>
+    </ul>
+    <span class="version-badge" id="versionBtn">v0.1.0</span>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
 
-<div class="grid">
+<!-- HERO -->
+<section id="hero">
+  <div class="gradient-mesh"><div class="mesh-blob"></div><div class="mesh-blob"></div><div class="mesh-blob"></div></div>
+  <div class="grid-overlay"></div>
+  <div class="hero-content fade-in">
+    <div class="hero-eyebrow">AI Developer · Researcher · Builder</div>
+    <h1 class="hero-title">Sage<br><em>Arbor</em></h1>
+    <p class="hero-tagline">Building AI that aligns with human values — from clinical research to coordination platforms to community tools.</p>
+    <div class="btn-group">
+      <a href="#alignment" class="btn-glow">Explore Work</a>
+      <a href="https://github.com/sagearbor" target="_blank" class="btn-ghost">GitHub →</a>
+    </div>
+  </div>
+</section>
 
-  <!-- Q1: AI Alignment & Open Source -->
-  <div class="quadrant q1">
-    <div class="quadrant-header"><div class="dot"></div><h2>AI Alignment &amp; Open Source</h2></div>
-    <div class="cards">
-      <a class="card" href="https://github.com/sagearbor/coord-transition" target="_blank">
-        <span class="card-icon">🕊️</span>
-        <div class="card-text"><div class="card-name">coord-transition</div><div class="card-desc">Offline coordination protocol PWA for peaceful geopolitical transitions</div></div>
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-grid">
+    <div class="stat-item fade-in"><h3 class="count-up" data-target="20">0</h3><p>Projects Built</p></div>
+    <div class="stat-item fade-in"><h3 class="count-up" data-target="12">0</h3><p>Open Source</p></div>
+    <div class="stat-item fade-in"><h3 class="count-up" data-target="4">0</h3><p>Focus Areas</p></div>
+    <div class="stat-item fade-in"><h3>DCRI</h3><p>Current Employer</p></div>
+  </div>
+</section>
+
+<!-- FOUR PILLARS -->
+<section id="pillars">
+  <div class="section-container">
+    <span class="section-label label-violet fade-in">What I Build</span>
+    <h2 class="section-title fade-in">Four Focus Areas</h2>
+    <div class="pillars-grid">
+      <div class="pillar-card pc-cyan fade-in">
+        <div class="pillar-icon">🧠</div>
+        <div class="pillar-label">Align</div>
+        <h3>AI Alignment &amp; Open Source</h3>
+        <p>Tools and frameworks that promote responsible, collaborative AI development.</p>
+      </div>
+      <div class="pillar-card pc-violet fade-in">
+        <div class="pillar-icon">💼</div>
+        <div class="pillar-label">Build</div>
+        <h3>Commercial Solutions</h3>
+        <p>Enterprise AI products from concept to deployment — creating real business value.</p>
+      </div>
+      <div class="pillar-card pc-coral fade-in">
+        <div class="pillar-icon">🚀</div>
+        <div class="pillar-label">Explore</div>
+        <h3>Products in Progress</h3>
+        <p>Frontier experiments and apps testing bold ideas at the edge of what's possible.</p>
+      </div>
+      <div class="pillar-card pc-lime fade-in">
+        <div class="pillar-icon">🎲</div>
+        <div class="pillar-label">Share</div>
+        <h3>Community &amp; Fun</h3>
+        <p>Tools built for people — games, utilities, and open contributions for everyone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALIGNMENT -->
+<section class="cat-section" id="alignment">
+  <div class="section-container">
+    <span class="section-label label-cyan fade-in">Align</span>
+    <h2 class="section-title fade-in">AI Alignment &amp; Open Source</h2>
+    <p class="section-desc fade-in">Research-driven tools for safer, more transparent, and more collaborative AI systems.</p>
+    <div class="project-grid">
+      <a class="project-card fade-in" href="https://github.com/sagearbor/quorum" target="_blank">
+        <div class="project-stripe ps-cyan"></div>
+        <div class="project-body">
+          <div class="project-icon">⚡</div>
+          <h3>quorum</h3>
+          <p>Multi-agent coordination platform for real-world problem solving. Duke Tech Expo 2026.</p>
+          <span class="badge badge-cyan">Alignment</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/ai-skill-eval-kit" target="_blank">
-        <span class="card-icon">📐</span>
-        <div class="card-text"><div class="card-name">ai-skill-eval-kit</div><div class="card-desc">Universal AIQ Framework — standardized AI competency measurement</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/coord-transition" target="_blank">
+        <div class="project-stripe ps-cyan"></div>
+        <div class="project-body">
+          <div class="project-icon">🕊️</div>
+          <h3>coord-transition</h3>
+          <p>Offline-capable coordination protocol PWA for peaceful geopolitical transitions.</p>
+          <span class="badge badge-cyan">Alignment</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/ai-ubi-wellbeing-transition-simulator" target="_blank">
-        <span class="card-icon">📊</span>
-        <div class="card-text"><div class="card-name">ai-ubi-wellbeing-simulator</div><div class="card-desc">Model AI economic benefits vs. human wellbeing across parameters</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/ai-skill-eval-kit" target="_blank">
+        <div class="project-stripe ps-cyan"></div>
+        <div class="project-body">
+          <div class="project-icon">📐</div>
+          <h3>ai-skill-eval-kit</h3>
+          <p>Universal AIQ Framework — standardized, evidence-based AI competency measurement with time-decay modeling.</p>
+          <span class="badge badge-cyan">Open Source</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/mindshift" target="_blank">
-        <span class="card-icon">🧠</span>
-        <div class="card-text"><div class="card-name">mindshift</div><div class="card-desc">EmpathyChat — see situations from AI-driven multi-perspective roles</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/ai-ubi-wellbeing-transition-simulator" target="_blank">
+        <div class="project-stripe ps-cyan"></div>
+        <div class="project-body">
+          <div class="project-icon">📊</div>
+          <h3>ai-ubi-wellbeing-simulator</h3>
+          <p>Model how AI economic benefits raise or lower human wellbeing across policy parameters.</p>
+          <span class="badge badge-cyan">Open Source</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/megaCity-rotating" target="_blank">
-        <span class="card-icon">🌆</span>
-        <div class="card-text"><div class="card-name">megaCity-rotating</div><div class="card-desc">Speculative 3.6M-person megacity — 8 rotating rings, anywhere in 15 min</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/mindshift" target="_blank">
+        <div class="project-stripe ps-cyan"></div>
+        <div class="project-body">
+          <div class="project-icon">🧠</div>
+          <h3>mindshift</h3>
+          <p>EmpathyChat — helps users see situations from multiple perspectives via AI-driven persona roles.</p>
+          <span class="badge badge-cyan">Open Source</span>
+        </div>
+      </a>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/megaCity-rotating" target="_blank">
+        <div class="project-stripe ps-cyan"></div>
+        <div class="project-body">
+          <div class="project-icon">🌆</div>
+          <h3>megaCity-rotating</h3>
+          <p>Speculative 3.6M-person megacity — 8 rotating rings, anywhere-to-anywhere in 15 min.</p>
+          <span class="badge badge-cyan">Speculative</span>
+        </div>
       </a>
     </div>
   </div>
+</section>
 
-  <!-- Q2: Commercial Solutions -->
-  <div class="quadrant q2">
-    <div class="quadrant-header"><div class="dot"></div><h2>Commercial Solutions</h2></div>
-    <div class="cards">
-      <a class="card" href="https://github.com/sagearbor/contextflow" target="_blank">
-        <span class="card-icon">🔌</span>
-        <div class="card-text"><div class="card-name">contextflow</div><div class="card-desc">Chrome extension for AI context management</div></div>
+<!-- COMMERCIAL -->
+<section class="cat-section" id="commercial">
+  <div class="section-container">
+    <span class="section-label label-violet fade-in">Build</span>
+    <h2 class="section-title fade-in">Commercial Solutions</h2>
+    <p class="section-desc fade-in">Enterprise AI built for real business problems — from clinical research to multi-agent pipelines.</p>
+    <div class="project-grid">
+      <a class="project-card fade-in" href="https://github.com/sagearbor/contextflow" target="_blank">
+        <div class="project-stripe ps-violet"></div>
+        <div class="project-body">
+          <div class="project-icon">🔌</div>
+          <h3>contextflow</h3>
+          <p>Chrome extension for AI context management — landing page and subscription management.</p>
+          <span class="badge badge-violet">Product</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/azure-a2a-agents" target="_blank">
-        <span class="card-icon">🤝</span>
-        <div class="card-text"><div class="card-name">azure-a2a-agents</div><div class="card-desc">Azure AI Foundry agents with A2A protocol and inter-agent communication</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/azure-a2a-agents" target="_blank">
+        <div class="project-stripe ps-violet"></div>
+        <div class="project-body">
+          <div class="project-icon">🤝</div>
+          <h3>azure-a2a-agents</h3>
+          <p>Azure AI Foundry agents with A2A protocol, chat UIs, and inter-agent communication.</p>
+          <span class="badge badge-violet">Enterprise</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/hecvat-assess" target="_blank">
-        <span class="card-icon">🔒</span>
-        <div class="card-text"><div class="card-name">hecvat-assess</div><div class="card-desc">HECVAT security assessment automation</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/portable-agent-a2a-pipeline" target="_blank">
+        <div class="project-stripe ps-violet"></div>
+        <div class="project-body">
+          <div class="project-icon">🔄</div>
+          <h3>portable-agent-a2a-pipeline</h3>
+          <p>Multi-agent pipeline (email → router → Jira) on Azure AI Foundry. 4 provider toggles.</p>
+          <span class="badge badge-violet">Enterprise</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/eoe" target="_blank">
-        <span class="card-icon">🔬</span>
-        <div class="card-text"><div class="card-name">eoe</div><div class="card-desc">EoE endoscopy image scoring model (clinical AI)</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/llm-as-judge-basedOnRegDocs" target="_blank">
+        <div class="project-stripe ps-violet"></div>
+        <div class="project-body">
+          <div class="project-icon">⚖️</div>
+          <h3>llm-as-judge</h3>
+          <p>Autonomous AI regulatory compliance review for 5 clinical doc types. Auditable DevOps workflow.</p>
+          <span class="badge badge-violet">Clinical AI</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/llm-as-judge-basedOnRegDocs" target="_blank">
-        <span class="card-icon">⚖️</span>
-        <div class="card-text"><div class="card-name">llm-as-judge</div><div class="card-desc">Autonomous AI regulatory compliance review — 5 doc types, DevOps workflow</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/hecvat-assess" target="_blank">
+        <div class="project-stripe ps-violet"></div>
+        <div class="project-body">
+          <div class="project-icon">🔒</div>
+          <h3>hecvat-assess</h3>
+          <p>HECVAT security assessment automation for higher education vendors.</p>
+          <span class="badge badge-violet">Security</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/portable-agent-a2a-pipeline" target="_blank">
-        <span class="card-icon">🔄</span>
-        <div class="card-text"><div class="card-name">portable-agent-a2a-pipeline</div><div class="card-desc">Multi-agent pipeline (email → router → Jira) on Azure AI Foundry</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/eoe" target="_blank">
+        <div class="project-stripe ps-violet"></div>
+        <div class="project-body">
+          <div class="project-icon">🔬</div>
+          <h3>eoe</h3>
+          <p>EoE endoscopy image scoring model — clinical AI for gastroenterology research.</p>
+          <span class="badge badge-violet">Clinical AI</span>
+        </div>
       </a>
     </div>
   </div>
+</section>
 
-  <!-- Q3: Products in Progress -->
-  <div class="quadrant q3">
-    <div class="quadrant-header"><div class="dot"></div><h2>Products in Progress</h2></div>
-    <div class="cards">
-      <a class="card" href="https://github.com/sagearbor/taskmaster-app" target="_blank">
-        <span class="card-icon">🎭</span>
-        <div class="card-text"><div class="card-name">taskmaster-app</div><div class="card-desc">Unofficial Taskmaster-style game app — mobile &amp; web</div></div>
+<!-- PRODUCTS -->
+<section class="cat-section" id="products">
+  <div class="section-container">
+    <span class="section-label label-coral fade-in">Explore</span>
+    <h2 class="section-title fade-in">Products in Progress</h2>
+    <p class="section-desc fade-in">Apps and tools actively being built — from healthcare to entertainment to developer utilities.</p>
+    <div class="project-grid">
+      <a class="project-card fade-in" href="https://github.com/sagearbor/taskmaster-app" target="_blank">
+        <div class="project-stripe ps-coral"></div>
+        <div class="project-body">
+          <div class="project-icon">🎭</div>
+          <h3>taskmaster-app</h3>
+          <p>Unofficial Taskmaster-style game app for mobile and web — play with friends.</p>
+          <span class="badge badge-coral">App</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/oralhistory_timeline" target="_blank">
-        <span class="card-icon">🎙️</span>
-        <div class="card-text"><div class="card-name">oralhistory_timeline</div><div class="card-desc">Convert oral or video histories into interactive timelines</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/oralhistory_timeline" target="_blank">
+        <div class="project-stripe ps-coral"></div>
+        <div class="project-body">
+          <div class="project-icon">🎙️</div>
+          <h3>oralhistory_timeline</h3>
+          <p>Convert oral or video histories into interactive, navigable timelines.</p>
+          <span class="badge badge-coral">App</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/VaxInsight" target="_blank">
-        <span class="card-icon">💉</span>
-        <div class="card-text"><div class="card-name">VaxInsight</div><div class="card-desc">Visualize effects of vaccination policy changes</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/VaxInsight" target="_blank">
+        <div class="project-stripe ps-coral"></div>
+        <div class="project-body">
+          <div class="project-icon">💉</div>
+          <h3>VaxInsight</h3>
+          <p>Visualize effects of vaccination policy changes across populations.</p>
+          <span class="badge badge-coral">Health</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/Create-mockData-from-real-file" target="_blank">
-        <span class="card-icon">🔏</span>
-        <div class="card-text"><div class="card-name">Create-mockData-from-real-file</div><div class="card-desc">Upload real file (even PHI) → generate safe mock version</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/Create-mockData-from-real-file" target="_blank">
+        <div class="project-stripe ps-coral"></div>
+        <div class="project-body">
+          <div class="project-icon">🔏</div>
+          <h3>mock-data-generator</h3>
+          <p>Upload a real file — even with PHI — and generate a structurally identical safe mock version.</p>
+          <span class="badge badge-coral">Utility</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/clinical-trial-pvalue-explorer" target="_blank">
-        <span class="card-icon">🧪</span>
-        <div class="card-text"><div class="card-name">clinical-trial-pvalue-explorer</div><div class="card-desc">Enter research idea → Streamlit + FastAPI p-value explorer</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/clinical-trial-pvalue-explorer" target="_blank">
+        <div class="project-stripe ps-coral"></div>
+        <div class="project-body">
+          <div class="project-icon">🧪</div>
+          <h3>pvalue-explorer</h3>
+          <p>Enter a research idea → Streamlit + FastAPI p-value explorer for clinical trials.</p>
+          <span class="badge badge-coral">Clinical</span>
+        </div>
       </a>
     </div>
   </div>
+</section>
 
-  <!-- Q4: Community & Tools -->
-  <div class="quadrant q4">
-    <div class="quadrant-header"><div class="dot"></div><h2>Community &amp; Fun</h2></div>
-    <div class="cards">
-      <a class="card" href="https://github.com/sagearbor/neighborhood-poker" target="_blank">
-        <span class="card-icon">♠️</span>
-        <div class="card-text"><div class="card-name">neighborhood-poker</div><div class="card-desc">Pro-Am poker tournament manager — Google Sheets based</div></div>
+<!-- COMMUNITY -->
+<section class="cat-section" id="community">
+  <div class="section-container">
+    <span class="section-label label-lime fade-in">Share</span>
+    <h2 class="section-title fade-in">Community &amp; Fun</h2>
+    <p class="section-desc fade-in">Tools built for people — games, open utilities, and things that make life a bit more enjoyable.</p>
+    <div class="project-grid">
+      <a class="project-card fade-in" href="https://github.com/sagearbor/neighborhood-poker" target="_blank">
+        <div class="project-stripe ps-lime"></div>
+        <div class="project-body">
+          <div class="project-icon">♠️</div>
+          <h3>neighborhood-poker</h3>
+          <p>Pro-Am poker tournament manager powered by Google Sheets. Run your own local tournament.</p>
+          <span class="badge badge-lime">Community</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/Medschool_ArborTester" target="_blank">
-        <span class="card-icon">🩺</span>
-        <div class="card-text"><div class="card-name">Medschool_ArborTester</div><div class="card-desc">Board-style question tester with progress tracking for med students</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/Medschool_ArborTester" target="_blank">
+        <div class="project-stripe ps-lime"></div>
+        <div class="project-body">
+          <div class="project-icon">🩺</div>
+          <h3>Medschool_ArborTester</h3>
+          <p>Board-style question tester with progress tracking for med students studying for boards.</p>
+          <span class="badge badge-lime">Education</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/csvChecker" target="_blank">
-        <span class="card-icon">📋</span>
-        <div class="card-text"><div class="card-name">csvChecker</div><div class="card-desc">Fast data validation for CSV files</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/env-banner-python" target="_blank">
+        <div class="project-stripe ps-lime"></div>
+        <div class="project-body">
+          <div class="project-icon">🚦</div>
+          <h3>env-banner</h3>
+          <p>Single portable utility to display environment warning banners in Python and Node apps. Never deploy to prod by accident.</p>
+          <span class="badge badge-lime">Dev Tool</span>
+        </div>
       </a>
-      <a class="card" href="https://github.com/sagearbor/concatGitFiles" target="_blank">
-        <span class="card-icon">📎</span>
-        <div class="card-text"><div class="card-name">concatGitFiles</div><div class="card-desc">Zero-dependency script — consolidates all project text for AI context</div></div>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/csvChecker" target="_blank">
+        <div class="project-stripe ps-lime"></div>
+        <div class="project-body">
+          <div class="project-icon">📋</div>
+          <h3>csvChecker</h3>
+          <p>Fast, lightweight CSV data validation — catch errors before they hit your pipeline.</p>
+          <span class="badge badge-lime">Utility</span>
+        </div>
+      </a>
+      <a class="project-card fade-in" href="https://github.com/sagearbor/concatGitFiles" target="_blank">
+        <div class="project-stripe ps-lime"></div>
+        <div class="project-body">
+          <div class="project-icon">📎</div>
+          <h3>concatGitFiles</h3>
+          <p>Zero-dependency script that consolidates all project text into one file — perfect for AI context windows.</p>
+          <span class="badge badge-lime">Dev Tool</span>
+        </div>
       </a>
     </div>
   </div>
+</section>
 
-</div>
-
-<!-- Password Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3>🔐 Admin Access</h3>
-    <input type="password" id="pwInput" placeholder="Password" autocomplete="off" />
-    <button id="pwSubmit">Enter</button>
-    <div class="error" id="pwError">Incorrect password</div>
+<!-- CTA -->
+<section id="cta">
+  <div class="section-container fade-in">
+    <h2 class="cta-heading">Want to <em>build something together</em>?</h2>
+    <div class="cta-buttons">
+      <a href="mailto:sagearbor+arborlife@gmail.com" class="btn-filled">Start a Conversation</a>
+      <a href="https://github.com/sagearbor" target="_blank" class="btn-outline">View GitHub</a>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- Backlog page (opened in new tab) -->
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/sagearbor" target="_blank" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+    </a>
+    <a href="mailto:sagearbor+arborlife@gmail.com" aria-label="Email">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z"/></svg>
+    </a>
+  </div>
+  <p>&copy; 2026 Sage Arbor · <span style="color:#3a3a4a">v0.1.0</span></p>
+</footer>
+
+<!-- BACKLOG DATA -->
 <script>
-  const BACKLOG_HTML = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sage Arbor — Backlog</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0d0d0f; color: #e8e8f0; font-family: 'Segoe UI', system-ui, sans-serif; padding: 2rem; }
-  h1 { font-size: 1.2rem; margin-bottom: 0.3rem; }
-  p { color: #7070a0; font-size: 0.8rem; margin-bottom: 1.5rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.6rem; }
-  .card { background: #14141a; border: 1px solid #2a2a38; border-radius: 8px; padding: 0.8rem 1rem; text-decoration: none; color: #e8e8f0; display: flex; gap: 0.6rem; align-items: flex-start; }
-  .card:hover { border-color: #7070a0; }
-  .card-icon { font-size: 1.1rem; }
-  .card-name { font-size: 0.82rem; font-weight: 600; }
-  .card-desc { font-size: 0.7rem; color: #7070a0; margin-top: 2px; }
-  .priority { display: inline-block; font-size: 0.65rem; padding: 1px 6px; border-radius: 99px; margin-top: 4px; }
-  .p-high { background: #3a1a1a; color: #f87171; }
-  .p-med { background: #2a2a1a; color: #fbbf24; }
-  .p-low { background: #1a2a1a; color: #4ade80; }
-</style>
-</head>
-<body>
-<h1>🗂️ Backlog / Prioritization</h1>
-<p>Private view — projects to finish, revisit, or decide on</p>
-<div class="grid">
-  <a class="card" href="https://github.com/sagearbor/quorum" target="_blank">
-    <span class="card-icon">⚡</span>
-    <div><div class="card-name">quorum</div><div class="card-desc">Multi-agent coordination platform — Duke Tech Expo 2026</div><span class="priority p-high">HIGH — finish for Expo</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/vocal-align" target="_blank">
-    <span class="card-icon">🎵</span>
-    <div><div class="card-name">vocal-align</div><div class="card-desc">Vocal coaching app with pitch viz and biofeedback</div><span class="priority p-med">MED</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/47doors" target="_blank">
-    <span class="card-icon">🚪</span>
-    <div><div class="card-name">47doors</div><div class="card-desc">???</div><span class="priority p-low">DECIDE: keep or archive</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/tapple" target="_blank">
-    <span class="card-icon">🍎</span>
-    <div><div class="card-name">tapple</div><div class="card-desc">???</div><span class="priority p-low">DECIDE: keep or archive</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/repo-to-video" target="_blank">
-    <span class="card-icon">🎬</span>
-    <div><div class="card-name">repo-to-video</div><div class="card-desc">Auto-generate video tutorials from GitHub repos</div><span class="priority p-med">MED — interesting product</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/word-doc-chatbot" target="_blank">
-    <span class="card-icon">📝</span>
-    <div><div class="card-name">word-doc-chatbot</div><div class="card-desc">Edit Word docs via AI with tracked changes</div><span class="priority p-med">MED — practical utility</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/PIrate_research" target="_blank">
-    <span class="card-icon">🏴‍☠️</span>
-    <div><div class="card-name">PIrate_research</div><div class="card-desc">AI bot matching PIs to new funding mechanisms</div><span class="priority p-med">MED — DCRI value</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/contextFlow-upgrade" target="_blank">
-    <span class="card-icon">🔗</span>
-    <div><div class="card-name">contextFlow-upgrade</div><div class="card-desc">Landing page + subscription management for ContextFlow</div><span class="priority p-high">HIGH — revenue product</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/ml-assets" target="_blank">
-    <span class="card-icon">📦</span>
-    <div><div class="card-name">ml-assets</div><div class="card-desc">Hosting ML models for other solutions to pull</div><span class="priority p-low">LOW — infra</span></div>
-  </a>
-  <a class="card" href="https://github.com/sagearbor/sagearbor" target="_blank">
-    <span class="card-icon">👤</span>
-    <div><div class="card-name">sagearbor (profile)</div><div class="card-desc">GitHub profile README — summarizes repos</div><span class="priority p-low">LOW — polish when ready</span></div>
-  </a>
-</div>
-</body>
-</html>`;
+const BACKLOG_HTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Backlog — Sage Arbor</title><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Space Grotesk',sans-serif;background:#0A0A0F;color:#F0F0F5;padding:2.5rem;}.header{margin-bottom:2rem;}.header h1{font-size:1.6rem;font-weight:800;margin-bottom:0.25rem;}.header p{color:#6B6B80;font-size:0.85rem;}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0.9rem;}.card{background:rgba(18,18,28,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:1.1rem 1.25rem;text-decoration:none;color:#F0F0F5;display:flex;gap:0.75rem;align-items:flex-start;transition:border-color 0.2s;}.card:hover{border-color:rgba(255,255,255,0.12);}.card-icon{font-size:1.3rem;flex-shrink:0;}.card-name{font-size:0.88rem;font-weight:700;margin-bottom:0.2rem;}.card-desc{font-size:0.72rem;color:#9E9EB8;margin-bottom:0.4rem;}.priority{font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:5px;display:inline-block;}.p-high{background:rgba(248,113,113,0.15);color:#f87171;}.p-med{background:rgba(251,191,36,0.15);color:#fbbf24;}.p-low{background:rgba(74,222,128,0.1);color:#4ade80;}</style></head><body><div class="header"><h1>🗂 Backlog</h1><p>Private — prioritization view</p></div><div class="grid"><a class="card" href="https://github.com/sagearbor/contextFlow-upgrade" target="_blank"><span class="card-icon">🔗</span><div><div class="card-name">contextFlow-upgrade</div><div class="card-desc">Landing page + subscription mgmt for ContextFlow Chrome Extension</div><span class="priority p-high">HIGH — revenue product</span></div></a><a class="card" href="https://github.com/sagearbor/vocal-align" target="_blank"><span class="card-icon">🎵</span><div><div class="card-name">vocal-align</div><div class="card-desc">Vocal coaching app with pitch viz and biofeedback</div><span class="priority p-med">MED</span></div></a><a class="card" href="https://github.com/sagearbor/repo-to-video" target="_blank"><span class="card-icon">🎬</span><div><div class="card-name">repo-to-video</div><div class="card-desc">Auto-generate professional video tutorials from GitHub repos</div><span class="priority p-med">MED — interesting product</span></div></a><a class="card" href="https://github.com/sagearbor/word-doc-chatbot" target="_blank"><span class="card-icon">📝</span><div><div class="card-name">word-doc-chatbot</div><div class="card-desc">Edit Word docs via AI with tracked changes maintained</div><span class="priority p-med">MED — practical utility</span></div></a><a class="card" href="https://github.com/sagearbor/PIrate_research" target="_blank"><span class="card-icon">🏴‍☠️</span><div><div class="card-name">PIrate_research</div><div class="card-desc">AI bot matching PIs to new funding mechanisms</div><span class="priority p-med">MED — DCRI value</span></div></a><a class="card" href="https://github.com/sagearbor/47doors" target="_blank"><span class="card-icon">🚪</span><div><div class="card-name">47doors</div><div class="card-desc">???</div><span class="priority p-low">DECIDE: keep or archive</span></div></a><a class="card" href="https://github.com/sagearbor/tapple" target="_blank"><span class="card-icon">🍎</span><div><div class="card-name">tapple</div><div class="card-desc">???</div><span class="priority p-low">DECIDE: keep or archive</span></div></a><a class="card" href="https://github.com/sagearbor/sagearbor" target="_blank"><span class="card-icon">👤</span><div><div class="card-name">sagearbor profile</div><div class="card-desc">GitHub profile README — auto-summarizes repos</div><span class="priority p-low">LOW — polish when ready</span></div></a><a class="card" href="https://github.com/sagearbor/ml-assets" target="_blank"><span class="card-icon">📦</span><div><div class="card-name">ml-assets</div><div class="card-desc">Hosting ML models for other solutions to pull</div><span class="priority p-low">LOW — infra</span></div></a></div></body></html>`;
 
-  document.getElementById('versionBtn').addEventListener('click', () => {
-    document.getElementById('modalOverlay').classList.add('open');
-    setTimeout(() => document.getElementById('pwInput').focus(), 50);
-  });
+// NAV HIDE ON SCROLL
+let lastScroll = 0;
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  const cur = window.scrollY;
+  if (cur > lastScroll && cur > 80) navbar.classList.add('hidden');
+  else navbar.classList.remove('hidden');
+  lastScroll = cur;
+});
 
-  document.getElementById('modalOverlay').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('modalOverlay')) {
-      document.getElementById('modalOverlay').classList.remove('open');
-      document.getElementById('pwInput').value = '';
-      document.getElementById('pwError').style.display = 'none';
-    }
-  });
+// MOBILE NAV
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
 
-  function tryPassword() {
-    const val = document.getElementById('pwInput').value;
-    if (val === 'sagenote666') {
-      document.getElementById('modalOverlay').classList.remove('open');
-      document.getElementById('pwInput').value = '';
-      const blob = new Blob([BACKLOG_HTML], {type: 'text/html'});
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    } else {
-      document.getElementById('pwError').style.display = 'block';
-      document.getElementById('pwInput').value = '';
-      document.getElementById('pwInput').focus();
-    }
+// SCROLL REVEAL
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+document.querySelectorAll('#hero .fade-in').forEach(el => el.classList.add('visible'));
+
+// COUNT UP
+function animateCount(el) {
+  const target = parseInt(el.dataset.target);
+  const start = performance.now();
+  function update(now) {
+    const p = Math.min((now - start) / 1500, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(e * target) + '+';
+    if (p < 1) requestAnimationFrame(update);
   }
-
-  document.getElementById('pwSubmit').addEventListener('click', tryPassword);
-  document.getElementById('pwInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') tryPassword();
-    if (e.key === 'Escape') document.getElementById('modalOverlay').classList.remove('open');
+  requestAnimationFrame(update);
+}
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.count-up').forEach(el => {
+        if (!el.dataset.animated) { el.dataset.animated = 'true'; animateCount(el); }
+      });
+    }
   });
+}, { threshold: 0.5 });
+document.querySelectorAll('#stats').forEach(el => countObserver.observe(el));
+
+// VERSION / ADMIN
+const modal = document.createElement('div');
+modal.className = 'modal-overlay';
+modal.innerHTML = '<div class="modal"><h3>🔐 Admin</h3><input type="password" id="pwInput" placeholder="Password" autocomplete="off"/><button id="pwSubmit">Enter</button><div class="error" id="pwError">Incorrect</div></div>';
+document.body.appendChild(modal);
+
+document.getElementById('versionBtn').addEventListener('click', () => {
+  modal.classList.add('open');
+  setTimeout(() => document.getElementById('pwInput').focus(), 50);
+});
+modal.addEventListener('click', e => {
+  if (e.target === modal) { modal.classList.remove('open'); document.getElementById('pwInput').value = ''; document.getElementById('pwError').style.display='none'; }
+});
+function tryPassword() {
+  if (document.getElementById('pwInput').value === 'sagenote666') {
+    modal.classList.remove('open');
+    document.getElementById('pwInput').value = '';
+    const blob = new Blob([BACKLOG_HTML], {type:'text/html'});
+    window.open(URL.createObjectURL(blob), '_blank');
+  } else {
+    document.getElementById('pwError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+document.getElementById('pwSubmit').addEventListener('click', tryPassword);
+document.addEventListener('keydown', e => {
+  if (!modal.classList.contains('open')) return;
+  if (e.key === 'Enter') tryPassword();
+  if (e.key === 'Escape') { modal.classList.remove('open'); document.getElementById('pwInput').value=''; document.getElementById('pwError').style.display='none'; }
+});
 </script>
 </body>
 </html>
