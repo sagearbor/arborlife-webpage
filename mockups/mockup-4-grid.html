@@ -638,24 +638,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { modal.classList.remove('open'); document.getElementById('pwInput').value=''; document.getElementById('pwError').style.display='none'; }
 });
 
-
-  fetch('https://api.github.com/repos/sagearbor/' + repo, {method:'GET'})
-    .then(function(r) {
-      var vis = r.ok ? 'public' : 'private';
-      _visCache[repo] = vis;
-      applyVisTag(card, vis);
-      card.dataset.visibility = vis;
-      applyVisFilter();
-    })
-    .catch(function() {
-      _visCache[repo] = 'private';
-      applyVisTag(card, 'private');
-      card.dataset.visibility = 'private';
-      applyVisFilter();
-    });
-}
-
-}
+// VISIBILITY FILTER
 var _currentFilter = 'all';
 function setVisFilter(filter) {
   _currentFilter = filter;
@@ -667,15 +650,43 @@ function setVisFilter(filter) {
 function applyVisFilter() {
   document.querySelectorAll('.project-card').forEach(function(card) {
     var vis = card.dataset.visibility || 'unknown';
-    var show = _currentFilter === 'all' ||
-               vis === _currentFilter ||
-               (vis === 'unknown'); // keep loading cards visible
+    var show = _currentFilter === 'all' || vis === _currentFilter || vis === 'unknown';
     card.classList.toggle('vis-hidden', !show);
   });
 }
 
-
-});
+// BACKGROUND LAZY-CHECK: verify hardcoded visibility, update DOM if stale
+(function() {
+  var changed = [];
+  var cards = document.querySelectorAll('.project-card[data-visibility]');
+  var pending = cards.length;
+  cards.forEach(function(card) {
+    var link = card.getAttribute('href') || '';
+    var m = link.match(/github\.com\/sagearbor\/([^/?#]+)/);
+    if (!m) { pending--; return; }
+    var repo = m[1];
+    var hardcoded = card.dataset.visibility;
+    fetch('https://api.github.com/repos/sagearbor/' + repo)
+      .then(function(r) { return r.ok ? 'public' : 'private'; })
+      .catch(function() { return 'private'; })
+      .then(function(live) {
+        if (live !== hardcoded) {
+          changed.push(repo + ': ' + hardcoded + ' → ' + live);
+          card.dataset.visibility = live;
+          var tag = card.querySelector('.vis-tag');
+          if (tag) {
+            tag.textContent = live;
+            tag.className = 'vis-tag vis-' + live;
+          }
+          applyVisFilter();
+        }
+        pending--;
+        if (pending === 0 && changed.length > 0) {
+          console.warn('[visibility] Stale hardcoded values detected:', changed.join(', '));
+        }
+      });
+  });
+})();
 
 </script>
 </body>
