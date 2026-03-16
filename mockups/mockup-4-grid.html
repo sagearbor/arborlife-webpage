@@ -139,6 +139,16 @@ section { padding:5rem 2rem; }
 .badge-cyan { background:var(--cyan-dim); color:var(--cyan); }
 .badge-coral { background:var(--coral-dim); color:var(--coral); }
 .badge-lime { background:var(--lime-dim); color:var(--lime); }
+
+/* VISIBILITY FILTER */
+.filter-bar { display:flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.filter-bar span { font-size:0.75rem; color:var(--faint); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-right:0.25rem; }
+.filter-btn { font-size:0.72rem; font-weight:700; padding:0.3rem 0.9rem; border-radius:99px; border:1px solid var(--glass-border); background:transparent; color:var(--muted); cursor:pointer; font-family:inherit; transition:all 0.2s; }
+.filter-btn:hover { color:var(--text); border-color:rgba(255,255,255,0.15); }
+.filter-btn.active { background:var(--glass); color:var(--text); border-color:rgba(255,255,255,0.18); }
+.project-card.vis-hidden { display:none; }
+.project-card[data-visibility="unknown"] { opacity:0.5; }
+
 .badge-row { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-top:0.1rem; }
 .visibility-badge { height:18px; border-radius:4px; vertical-align:middle; opacity:0.85; }
 
@@ -274,58 +284,58 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <h2 class="section-title fade-in">AI Alignment &amp; Open Source</h2>
     <p class="section-desc fade-in">Research-driven tools for safer, more transparent, and more collaborative AI systems.</p>
     <div class="project-grid">
-      <a class="project-card fade-in" href="https://github.com/sagearbor/quorum" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/quorum" target="_blank">
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">⚡</div>
           <h3>quorum</h3>
           <p>Multi-agent coordination platform for real-world problem solving. Duke Tech Expo 2026.</p>
-          <div class="badge-row"><span class="badge badge-cyan">Alignment</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/quorum?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-cyan">Alignment</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/quorum?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/coord-transition" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/coord-transition" target="_blank">
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">🕊️</div>
           <h3>coord-transition</h3>
           <p>Offline-capable coordination protocol PWA for peaceful geopolitical transitions.</p>
-          <div class="badge-row"><span class="badge badge-cyan">Alignment</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/coord-transition?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-cyan">Alignment</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/coord-transition?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/ai-skill-eval-kit" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/ai-skill-eval-kit" target="_blank">
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">📐</div>
           <h3>ai-skill-eval-kit</h3>
           <p>Universal AIQ Framework — standardized, evidence-based AI competency measurement with time-decay modeling.</p>
-          <div class="badge-row"><span class="badge badge-cyan">Open Source</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/ai-skill-eval-kit?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-cyan">Open Source</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/ai-skill-eval-kit?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/ai-ubi-wellbeing-transition-simulator" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/ai-ubi-wellbeing-transition-simulator" target="_blank">
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">📊</div>
           <h3>ai-ubi-wellbeing-simulator</h3>
           <p>Model how AI economic benefits raise or lower human wellbeing across policy parameters.</p>
-          <div class="badge-row"><span class="badge badge-cyan">Open Source</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/ai-ubi-wellbeing-transition-simulator?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-cyan">Open Source</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/ai-ubi-wellbeing-transition-simulator?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/mindshift" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/mindshift" target="_blank">
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">🧠</div>
           <h3>mindshift</h3>
           <p>EmpathyChat — helps users see situations from multiple perspectives via AI-driven persona roles.</p>
-          <div class="badge-row"><span class="badge badge-cyan">Open Source</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/mindshift?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-cyan">Open Source</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/mindshift?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/megaCity-rotating" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/megaCity-rotating" target="_blank">
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">🌆</div>
           <h3>megaCity-rotating</h3>
           <p>Speculative 3.6M-person megacity — 8 rotating rings, anywhere-to-anywhere in 15 min.</p>
-          <div class="badge-row"><span class="badge badge-cyan">Speculative</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/megaCity-rotating?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-cyan">Speculative</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/megaCity-rotating?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
     </div>
@@ -339,58 +349,58 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <h2 class="section-title fade-in">Commercial Solutions</h2>
     <p class="section-desc fade-in">Enterprise AI built for real business problems — from clinical research to multi-agent pipelines.</p>
     <div class="project-grid">
-      <a class="project-card fade-in" href="https://github.com/sagearbor/contextflow" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/contextflow" target="_blank">
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔌</div>
           <h3>contextflow</h3>
           <p>Chrome extension for AI context management — landing page and subscription management.</p>
-          <div class="badge-row"><span class="badge badge-violet">Product</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/contextflow?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-violet">Product</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/contextflow?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/azure-a2a-agents" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/azure-a2a-agents" target="_blank">
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🤝</div>
           <h3>azure-a2a-agents</h3>
           <p>Azure AI Foundry agents with A2A protocol, chat UIs, and inter-agent communication.</p>
-          <div class="badge-row"><span class="badge badge-violet">Enterprise</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/azure-a2a-agents?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-violet">Enterprise</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/azure-a2a-agents?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/portable-agent-a2a-pipeline" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/portable-agent-a2a-pipeline" target="_blank">
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔄</div>
           <h3>portable-agent-a2a-pipeline</h3>
           <p>Multi-agent pipeline (email → router → Jira) on Azure AI Foundry. 4 provider toggles.</p>
-          <div class="badge-row"><span class="badge badge-violet">Enterprise</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/portable-agent-a2a-pipeline?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-violet">Enterprise</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/portable-agent-a2a-pipeline?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/llm-as-judge-basedOnRegDocs" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/llm-as-judge-basedOnRegDocs" target="_blank">
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">⚖️</div>
           <h3>llm-as-judge</h3>
           <p>Autonomous AI regulatory compliance review for 5 clinical doc types. Auditable DevOps workflow.</p>
-          <div class="badge-row"><span class="badge badge-violet">Clinical AI</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/llm-as-judge-basedOnRegDocs?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-violet">Clinical AI</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/llm-as-judge-basedOnRegDocs?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/hecvat-assess" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/hecvat-assess" target="_blank">
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔒</div>
           <h3>hecvat-assess</h3>
           <p>HECVAT security assessment automation for higher education vendors.</p>
-          <div class="badge-row"><span class="badge badge-violet">Security</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/hecvat-assess?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-violet">Security</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/hecvat-assess?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/eoe" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/eoe" target="_blank">
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔬</div>
           <h3>eoe</h3>
           <p>EoE endoscopy image scoring model — clinical AI for gastroenterology research.</p>
-          <div class="badge-row"><span class="badge badge-violet">Clinical AI</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/eoe?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-violet">Clinical AI</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/eoe?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
     </div>
@@ -404,58 +414,58 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <h2 class="section-title fade-in">Products in Progress</h2>
     <p class="section-desc fade-in">Apps and tools actively being built — from healthcare to entertainment to developer utilities.</p>
     <div class="project-grid">
-      <a class="project-card fade-in" href="https://github.com/sagearbor/taskmaster-app" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/taskmaster-app" target="_blank">
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🎭</div>
           <h3>taskmaster-app</h3>
           <p>Unofficial Taskmaster-style game app for mobile and web — play with friends.</p>
-          <div class="badge-row"><span class="badge badge-coral">App</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/taskmaster-app?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-coral">App</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/taskmaster-app?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/oralhistory_timeline" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/oralhistory_timeline" target="_blank">
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🎙️</div>
           <h3>oralhistory_timeline</h3>
           <p>Convert oral or video histories into interactive, navigable timelines.</p>
-          <div class="badge-row"><span class="badge badge-coral">App</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/oralhistory_timeline?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-coral">App</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/oralhistory_timeline?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/VaxInsight" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/VaxInsight" target="_blank">
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">💉</div>
           <h3>VaxInsight</h3>
           <p>Visualize effects of vaccination policy changes across populations.</p>
-          <div class="badge-row"><span class="badge badge-coral">Health</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/VaxInsight?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-coral">Health</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/VaxInsight?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/Create-mockData-from-real-file" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/Create-mockData-from-real-file" target="_blank">
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🔏</div>
           <h3>mock-data-generator</h3>
           <p>Upload a real file — even with PHI — and generate a structurally identical safe mock version.</p>
-          <div class="badge-row"><span class="badge badge-coral">Utility</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/Create-mockData-from-real-file?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-coral">Utility</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/Create-mockData-from-real-file?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/clinical-trial-pvalue-explorer" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/clinical-trial-pvalue-explorer" target="_blank">
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🧪</div>
           <h3>pvalue-explorer</h3>
           <p>Enter a research idea → Streamlit + FastAPI p-value explorer for clinical trials.</p>
-          <div class="badge-row"><span class="badge badge-coral">Clinical</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/clinical-trial-pvalue-explorer?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-coral">Clinical</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/clinical-trial-pvalue-explorer?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/vocal-align" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/vocal-align" target="_blank">
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🎵</div>
           <h3>vocal-align</h3>
           <p>Real-time vocal coaching app with pitch visualization and biofeedback. Practice singing with adaptive difficulty.</p>
-          <div class="badge-row"><span class="badge badge-coral">App</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/vocal-align?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-coral">App</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/vocal-align?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
     </div>
@@ -469,49 +479,49 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <h2 class="section-title fade-in">Community &amp; Fun</h2>
     <p class="section-desc fade-in">Tools built for people — games, open utilities, and things that make life a bit more enjoyable.</p>
     <div class="project-grid">
-      <a class="project-card fade-in" href="https://github.com/sagearbor/neighborhood-poker" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/neighborhood-poker" target="_blank">
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">♠️</div>
           <h3>neighborhood-poker</h3>
           <p>Pro-Am poker tournament manager powered by Google Sheets. Run your own local tournament.</p>
-          <div class="badge-row"><span class="badge badge-lime">Community</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/neighborhood-poker?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-lime">Community</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/neighborhood-poker?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/Medschool_ArborTester" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/Medschool_ArborTester" target="_blank">
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">🩺</div>
           <h3>Medschool_ArborTester</h3>
           <p>Board-style question tester with progress tracking for med students studying for boards.</p>
-          <div class="badge-row"><span class="badge badge-lime">Education</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/Medschool_ArborTester?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-lime">Education</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/Medschool_ArborTester?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/env-banner-python" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/env-banner-python" target="_blank">
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">🚦</div>
           <h3>env-banner</h3>
           <p>Single portable utility to display environment warning banners in Python and Node apps. Never deploy to prod by accident.</p>
-          <div class="badge-row"><span class="badge badge-lime">Dev Tool</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/env-banner-python?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-lime">Dev Tool</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/env-banner-python?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/csvChecker" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/csvChecker" target="_blank">
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">📋</div>
           <h3>csvChecker</h3>
           <p>Fast, lightweight CSV data validation — catch errors before they hit your pipeline.</p>
-          <div class="badge-row"><span class="badge badge-lime">Utility</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/csvChecker?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-lime">Utility</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/csvChecker?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
-      <a class="project-card fade-in" href="https://github.com/sagearbor/concatGitFiles" target="_blank">
+      <a class="project-card fade-in" data-visibility="unknown" href="https://github.com/sagearbor/concatGitFiles" target="_blank">
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">📎</div>
           <h3>concatGitFiles</h3>
           <p>Zero-dependency script that consolidates all project text into one file — perfect for AI context windows.</p>
-          <div class="badge-row"><span class="badge badge-lime">Dev Tool</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/concatGitFiles?label=&logo=github&style=flat-square" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; this.onerror=null;" alt="visibility"></div>
+          <div class="badge-row"><span class="badge badge-lime">Dev Tool</span><img class="visibility-badge" src="https://img.shields.io/github/visibility/sagearbor/concatGitFiles?label=&logo=github&style=flat-square" onload="setCardVis(this,'public')" onerror="this.src='https://img.shields.io/badge/-private-555555?logo=github&style=flat-square'; setCardVis(this,'private'); this.onerror=null;" alt="visibility"></div>
         </div>
       </a>
     </div>
@@ -622,6 +632,33 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter') tryPassword();
   if (e.key === 'Escape') { modal.classList.remove('open'); document.getElementById('pwInput').value=''; document.getElementById('pwError').style.display='none'; }
 });
+
+function setCardVis(img, vis) {
+  var card = img.closest('.project-card');
+  if (card) {
+    card.dataset.visibility = vis;
+    card.style.opacity = '';
+    applyVisFilter();
+  }
+}
+var _currentFilter = 'all';
+function setVisFilter(filter) {
+  _currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.filter === filter);
+  });
+  applyVisFilter();
+}
+function applyVisFilter() {
+  document.querySelectorAll('.project-card').forEach(function(card) {
+    var vis = card.dataset.visibility || 'unknown';
+    var show = _currentFilter === 'all' ||
+               vis === _currentFilter ||
+               (vis === 'unknown'); // keep loading cards visible
+    card.classList.toggle('vis-hidden', !show);
+  });
+}
+
 </script>
 </body>
 </html>
