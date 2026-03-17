@@ -140,6 +140,15 @@ section { padding:5rem 2rem; }
 .badge-coral { background:var(--coral-dim); color:var(--coral); }
 .badge-lime { background:var(--lime-dim); color:var(--lime); }
 
+
+/* CARD CORNER ICONS */
+.project-card { position:relative; }
+.card-corner { position:absolute; top:0.6rem; right:0.7rem; display:flex; gap:0.3rem; align-items:center; z-index:2; }
+.corner-icon { font-size:0.6rem; font-weight:700; padding:0.15rem 0.45rem; border-radius:5px; line-height:1.4; letter-spacing:0.03em; }
+.ci-vpn { background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.2); }
+.ci-hosted { background:rgba(74,222,128,0.12); color:#4ade80; border:1px solid rgba(74,222,128,0.2); }
+.ci-github { background:rgba(255,255,255,0.06); color:#9E9EB8; border:1px solid rgba(255,255,255,0.08); }
+
 /* VISIBILITY FILTER */
 .filter-bar { display:flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
 .filter-bar span { font-size:0.75rem; color:var(--faint); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-right:0.25rem; }
@@ -290,6 +299,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <p class="section-desc fade-in">Research-driven tools for safer, more transparent, and more collaborative AI systems.</p>
     <div class="project-grid">
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/quorum" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">⚡</div>
@@ -299,6 +309,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="private" href="https://github.com/sagearbor/coord-transition" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">🕊️</div>
@@ -308,6 +319,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/ai-skill-eval-kit" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">📐</div>
@@ -317,6 +329,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/ai-ubi-wellbeing-transition-simulator" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">📊</div>
@@ -326,6 +339,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/mindshift" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">🧠</div>
@@ -335,6 +349,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/megaCity-rotating" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-cyan"></div>
         <div class="project-body">
           <div class="project-icon">🌆</div>
@@ -355,6 +370,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <p class="section-desc fade-in">Enterprise AI built for real business problems — from clinical research to multi-agent pipelines.</p>
     <div class="project-grid">
       <a class="project-card fade-in" data-visibility="private" href="https://github.com/sagearbor/contextflow" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔌</div>
@@ -364,6 +380,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/azure-a2a-agents" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🤝</div>
@@ -373,6 +390,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/portable-agent-a2a-pipeline" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔄</div>
@@ -382,6 +400,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="private" href="https://github.com/sagearbor/llm-as-judge-basedOnRegDocs" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-vpn" title="Work VPN — edit on work machine only">VPN</span><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">⚖️</div>
@@ -391,6 +410,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/hecvat-assess" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-vpn" title="Work VPN — edit on work machine only">VPN</span><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔒</div>
@@ -400,6 +420,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="private" href="https://github.com/sagearbor/eoe" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-violet"></div>
         <div class="project-body">
           <div class="project-icon">🔬</div>
@@ -420,6 +441,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <p class="section-desc fade-in">Apps and tools actively being built — from healthcare to entertainment to developer utilities.</p>
     <div class="project-grid">
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/taskmaster-app" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🎭</div>
@@ -429,6 +451,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="private" href="https://github.com/sagearbor/oralhistory_timeline" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🎙️</div>
@@ -438,6 +461,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/VaxInsight" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">💉</div>
@@ -447,6 +471,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/Create-mockData-from-real-file" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🔏</div>
@@ -456,6 +481,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/clinical-trial-pvalue-explorer" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🧪</div>
@@ -465,6 +491,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="private" href="https://github.com/sagearbor/vocal-align" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-coral"></div>
         <div class="project-body">
           <div class="project-icon">🎵</div>
@@ -485,6 +512,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
     <p class="section-desc fade-in">Tools built for people — games, open utilities, and things that make life a bit more enjoyable.</p>
     <div class="project-grid">
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/neighborhood-poker" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">♠️</div>
@@ -494,6 +522,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/Medschool_ArborTester" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">🩺</div>
@@ -503,6 +532,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/env-banner-python" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">🚦</div>
@@ -512,6 +542,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/csvChecker" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">📋</div>
@@ -521,6 +552,7 @@ footer p { color:var(--faint); font-size:0.8rem; }
         </div>
       </a>
       <a class="project-card fade-in" data-visibility="public" href="https://github.com/sagearbor/concatGitFiles" target="_blank">
+        <div class="card-corner"><span class="corner-icon ci-github" title="GitHub repo">GH</span></div>
         <div class="project-stripe ps-lime"></div>
         <div class="project-body">
           <div class="project-icon">📎</div>
