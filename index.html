@@ -191,6 +191,24 @@ a.went-private{cursor:default;text-decoration:none}
 .avail .pulse{width:8px;height:8px;border-radius:50%;background:var(--t-civic);box-shadow:0 0 0 0 var(--t-civic);animation:pulse 2.2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--t-civic) 55%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 
+/* ---------- JOB MATCH ---------- */
+.match-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.4rem}
+.match-box textarea,.match-box input{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;font:inherit;font-size:.9rem}
+.match-box textarea{resize:vertical;margin-bottom:.7rem}
+.match-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.match-row input{flex:1;min-width:200px}
+.match-row .btn{white-space:nowrap}
+#matchOut{margin-top:1.2rem}
+.match-fit{display:inline-block;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;padding:.25rem .8rem;border-radius:20px;margin-bottom:.6rem}
+.mf-strong{background:color-mix(in srgb,var(--t-civic) 18%,transparent);color:var(--t-civic)}
+.mf-moderate{background:color-mix(in srgb,var(--t-ent) 18%,transparent);color:var(--t-ent)}
+.mf-weak{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.match-table{width:100%;border-collapse:collapse;margin-top:.8rem;font-size:.85rem}
+.match-table td{border-top:1px solid var(--line);padding:.5rem .4rem;vertical-align:top}
+.ms{font-weight:700;white-space:nowrap;text-transform:capitalize}
+.ms-met{color:var(--t-civic)}.ms-partial{color:var(--t-ent)}.ms-gap{color:var(--accent)}
+.match-note{color:var(--faint);font-size:.78rem;margin-top:.8rem}
+
 /* ---------- FOOTER ---------- */
 footer{border-top:1px solid var(--line);padding:2.4rem 0;text-align:center}
 .foot-links{display:flex;gap:1.6rem;justify-content:center;margin-bottom:1rem}
@@ -438,6 +456,24 @@ footer .fine{color:var(--faint);font-size:.78rem}
   </div>
 </div></section>
 
+<!-- JOB MATCH (hidden until MATCHER_ENDPOINT is set in the script below) -->
+<section id="match" hidden><div class="wrap">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Try it</span>
+    <h2 class="serif">Does my background fit your role?</h2>
+    <p>Paste a job description (or a link) and get a live analysis of how I match — met, partial, and gaps. Powered by Claude; honest by design.</p>
+  </div>
+  <div class="match-box reveal">
+    <textarea id="matchInput" rows="5" placeholder="Paste a job description here…"></textarea>
+    <div class="match-row">
+      <input id="matchUrl" type="url" placeholder="…or paste a job-posting URL">
+      <button id="matchBtn" class="btn btn-primary">Analyze fit</button>
+    </div>
+    <div id="matchOut"></div>
+    <p class="match-note">Your input is sent to a small server that calls Claude — it isn't stored.</p>
+  </div>
+</div></section>
+
 <!-- CONTACT -->
 <section id="contact"><div class="wrap"><div class="inner reveal">
   <div class="avail"><span class="pulse"></span> Available for consulting &amp; select roles</div>
@@ -508,6 +544,54 @@ var cio = new IntersectionObserver(function (entries) {
   });
 }, { threshold: 0.5 });
 document.querySelectorAll('#stats').forEach(function (el) { cio.observe(el); });
+
+// JOB-MATCH WIDGET — paste your deployed Cloudflare Worker URL here to enable it.
+// Left empty, the "Try it" section stays hidden, so the site is safe to ship as-is.
+// See matcher/README.md for the 5-minute deploy.
+var MATCHER_ENDPOINT = ""; // e.g. "https://arborlife-matcher.<your-subdomain>.workers.dev"
+(function () {
+  if (!MATCHER_ENDPOINT) return; // stays hidden until configured
+  var sec = document.getElementById('match');
+  if (!sec) return;
+  sec.hidden = false;
+  var btn = document.getElementById('matchBtn');
+  var out = document.getElementById('matchOut');
+  function esc(s) { return (s || '').replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function render(d) {
+    if (d.error) { out.innerHTML = '<p class="match-note">' + esc(d.error) + '</p>'; return; }
+    var fit = (d.overall_fit || 'moderate').toLowerCase();
+    var html = '<span class="match-fit mf-' + esc(fit) + '">' + esc(fit) + ' fit</span>';
+    html += '<p>' + esc(d.summary || '') + '</p>';
+    if (d.aspects && d.aspects.length) {
+      html += '<table class="match-table">';
+      d.aspects.forEach(function (a) {
+        var s = (a.status || '').toLowerCase();
+        html += '<tr><td class="ms ms-' + esc(s) + '">' + esc(s) + '</td>'
+              + '<td><b>' + esc(a.requirement) + '</b><br>' + esc(a.evidence || '') + '</td></tr>';
+      });
+      html += '</table>';
+    }
+    if (d.top_gaps && d.top_gaps.length) {
+      html += '<p class="match-note">Gaps to close: ' + d.top_gaps.map(esc).join(' &middot; ') + '</p>';
+    }
+    out.innerHTML = html;
+  }
+  btn.addEventListener('click', function () {
+    var text = document.getElementById('matchInput').value.trim();
+    var url = document.getElementById('matchUrl').value.trim();
+    if (!text && !url) { out.innerHTML = '<p class="match-note">Paste a description or a URL first.</p>'; return; }
+    btn.disabled = true;
+    out.innerHTML = '<p class="match-note">Analyzing…</p>';
+    fetch(MATCHER_ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jobText: text, jobUrl: url }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { btn.disabled = false; render(d); })
+      .catch(function () { btn.disabled = false; out.innerHTML = '<p class="match-note">Something went wrong — try pasting the text.</p>'; });
+  });
+})();
 
 // ROBUSTNESS: if a linked repo has gone private/renamed/deleted, downgrade its
 // card to a non-linked "Private" card instead of showing a broken link.
