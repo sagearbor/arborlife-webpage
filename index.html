@@ -168,6 +168,7 @@ section{padding:clamp(3.5rem,8vw,6rem) 0}
 .card .arrow{color:var(--faint);flex-shrink:0;transition:color .2s,transform .2s}
 .card:hover .arrow{color:var(--accent);transform:translate(2px,-2px)}
 .card[data-private]:hover{transform:none;background:var(--surface)}
+a.went-private{cursor:default;text-decoration:none}
 
 /* ---------- ABOUT ---------- */
 .about{display:grid;grid-template-columns:1.4fr 1fr;gap:3rem;align-items:center}
@@ -382,9 +383,9 @@ footer .fine{color:var(--faint);font-size:.78rem}
       <a class="card" href="https://github.com/sagearbor/personhood" target="_blank" rel="noopener">
         <div class="top"><h4>Personhood + OpenLine</h4><svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
         <p>Sybil-resistant proof-of-personhood + infrastructure for anonymous payments, voting &amp; UBI. Early stage.</p></a>
-      <a class="card" href="https://github.com/sagearbor/whipCongress" target="_blank" rel="noopener">
-        <div class="top"><h4>WhipCongress</h4><svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-        <p>Civic prototype: forecast a bill's likely House/Senate votes and suggest changes to reach passage.</p></a>
+      <div class="card" data-private>
+        <div class="top"><h4>WhipCongress</h4><span class="lock">Private</span></div>
+        <p>Civic prototype: forecast a bill's likely House/Senate votes and suggest changes to reach passage.</p></div>
       <a class="card" href="https://github.com/sagearbor/VaxInsight" target="_blank" rel="noopener">
         <div class="top"><h4>VaxInsight</h4><svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
         <p>Visualize the population-level effects of vaccination-policy changes.</p></a>
@@ -507,6 +508,41 @@ var cio = new IntersectionObserver(function (entries) {
   });
 }, { threshold: 0.5 });
 document.querySelectorAll('#stats').forEach(function (el) { cio.observe(el); });
+
+// ROBUSTNESS: if a linked repo has gone private/renamed/deleted, downgrade its
+// card to a non-linked "Private" card instead of showing a broken link.
+// Only acts on an explicit 404 (private repos 404 for anonymous requests);
+// rate-limit (403) or network errors are ignored so links are never nuked by mistake.
+(function () {
+  function slug(href) { var m = (href || '').match(/github\.com\/sagearbor\/([^\/?#]+)/); return m ? m[1] : null; }
+  function downgrade(el) {
+    el.removeAttribute('href');
+    el.setAttribute('data-private', '');
+    el.classList.add('went-private');
+    var arrow = el.querySelector('.arrow'); if (arrow) arrow.remove();
+    var go = el.querySelector('.go'); if (go) go.remove();
+    if (!el.querySelector('.lock') && !el.querySelector('.tag.priv')) {
+      var top = el.querySelector('.top');
+      if (top) { var s = document.createElement('span'); s.className = 'lock'; s.textContent = 'Private'; top.appendChild(s); }
+      else { var tr = el.querySelector('.tagrow');
+        if (tr) { var t = document.createElement('span'); t.className = 'tag priv'; t.textContent = 'Private'; tr.appendChild(t); } }
+    }
+  }
+  var links = document.querySelectorAll('a.card[href*="github.com/sagearbor/"], a.sig[href*="github.com/sagearbor/"]');
+  links.forEach(function (el) {
+    var name = slug(el.getAttribute('href')); if (!name) return;
+    var key = 'vis:' + name, cached = null;
+    try { cached = sessionStorage.getItem(key); } catch (e) {}
+    if (cached === 'private') { downgrade(el); return; }
+    if (cached === 'public') { return; }
+    fetch('https://api.github.com/repos/sagearbor/' + name, { headers: { 'Accept': 'application/vnd.github+json' } })
+      .then(function (r) {
+        if (r.status === 404) { try { sessionStorage.setItem(key, 'private'); } catch (e) {} downgrade(el); }
+        else if (r.ok) { try { sessionStorage.setItem(key, 'public'); } catch (e) {} }
+      })
+      .catch(function () { /* network / CORS error: leave the link as-is */ });
+  });
+})();
 </script>
 </body>
 </html>
