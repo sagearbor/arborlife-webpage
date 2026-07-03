@@ -816,24 +816,36 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
   }
   function constellation(){
     clearAll();
-    var o = overlay(420, 300), ctx = o.ctx, W = o.w, H = o.h, col = accent();
+    var wrap = document.querySelector('.hero-photo-wrap');
+    if(!wrap){ toast('<span style="font-size:1.05rem">the constellation needs the hero photo in view</span>'); return; }
+    wrap.style.position = 'relative';
+    var img = wrap.querySelector('img'); if(img){ img.style.position='relative'; img.style.zIndex='1'; }
+    var c = document.createElement('canvas'); c.className = 'egg-rings';
+    c.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    wrap.insertBefore(c, wrap.firstChild);
+    var DPR = Math.min(window.devicePixelRatio || 1, 2), W = wrap.clientWidth, H = wrap.clientHeight;
+    c.width = W * DPR; c.height = H * DPR;
+    var ctx = c.getContext('2d'); ctx.scale(DPR, DPR);
+    var col = accent(), cx = W / 2, cyc = H * 0.44, base = Math.min(W, H) * 0.42;
     var names = ['VERDICT', 'UBI sim', 'personhood', 'whipCongress', 'Rotunda', 'VaxInsight', 'AIQ', 'eoe'], n = names.length, pts = [];
-    for (var i = 0; i < n; i++) { var a = i * 2 * Math.PI / n + 0.4, rr = (i % 2 ? 0.9 : 0.55) * Math.min(W, H) * 0.42; pts.push({ x: W / 2 + Math.cos(a) * rr, y: H * 0.46 + Math.sin(a) * rr * 0.8, nm: names[i] }); }
-    var start = performance.now(), dur = 6500;
+    for (var i = 0; i < n; i++) { var a = i * 2 * Math.PI / n - Math.PI / 2, rr = (i % 2 ? 0.86 : 0.56) * base; pts.push({ x: cx + Math.cos(a) * rr, y: cyc + Math.sin(a) * rr, lx: cx + Math.cos(a) * (rr + 12), ly: cyc + Math.sin(a) * (rr + 12), nm: names[i] }); }
+    var start = performance.now();
     (function f(t){
-      if (!o.c.parentNode) return;
-      var el = t - start, p = Math.min(el / dur, 1), fade = p < 0.1 ? p / 0.1 : (p > 0.85 ? (1 - p) / 0.15 : 1);
+      if (!c.parentNode) return;
+      var el = t - start, intro = Math.min(el / 1600, 1), shown = Math.floor(intro * n + 0.001);
       ctx.clearRect(0, 0, W, H);
-      var edges = Math.floor(p * n * 1.4);
       ctx.strokeStyle = col; ctx.lineWidth = 1;
-      for (var e = 0; e < edges && e < n; e++) { ctx.globalAlpha = 0.32 * fade; ctx.beginPath(); ctx.moveTo(pts[e].x, pts[e].y); ctx.lineTo(pts[(e + 2) % n].x, pts[(e + 2) % n].y); ctx.stroke(); }
+      for (var e = 0; e < n && e < shown; e++) { var q = (e + 2) % n; ctx.globalAlpha = 0.3; ctx.beginPath(); ctx.moveTo(pts[e].x, pts[e].y); ctx.lineTo(pts[q].x, pts[q].y); ctx.stroke(); }
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       pts.forEach(function (pt, i) {
+        if (i >= shown) return;
         var tw = 0.6 + 0.4 * Math.sin(el * 0.004 + i);
-        ctx.globalAlpha = fade * (0.7 + 0.3 * tw); ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.6 + tw, 0, 7); ctx.fillStyle = col; ctx.fill();
-        ctx.globalAlpha = fade * 0.8; ctx.fillStyle = '#cfc8c2'; ctx.font = '600 9px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(pt.nm, pt.x, pt.y - 8);
+        ctx.globalAlpha = 0.9; ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.3 + tw, 0, 7); ctx.fillStyle = col; ctx.fill();
+        ctx.globalAlpha = 0.92; ctx.fillStyle = '#ece6df'; ctx.font = '700 9px Inter, sans-serif';
+        ctx.fillText(pt.nm, pt.lx, pt.ly);
       });
       ctx.globalAlpha = 1;
-      if (p < 1) requestAnimationFrame(f); else o.c.remove();
+      requestAnimationFrame(f);
     })(start);
   }
   var items = [
