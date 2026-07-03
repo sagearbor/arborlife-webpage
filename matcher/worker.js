@@ -11,25 +11,171 @@ const ALLOWED_ORIGIN = "https://sagearbor.github.io"; // tighten to your site's 
 const MODEL = "claude-haiku-4-5"; // cost-effective; swap to "claude-sonnet-4-6" for higher quality
 const MAX_INPUT_CHARS = 40000; // lenient cap (~10k words); still bounds runaway cost
 
-const SAGE_PROFILE = `You are analyzing how well ONE candidate — Sage Arbor — matches a job posting.
-
-CANDIDATE PROFILE
-- PhD Biochemistry / Computational Biology (Washington University); B.S. Chemistry & Biology (Duke). 25+ years.
-- Currently Lead, AI Strategy & Implementation at Duke Clinical Research Institute: LLM architectures (RAG, MoE, agents), red-teaming, LLM validation/evals, clinical compliance; owns a $32M AI portfolio for a 1,000+ person org.
-- Programming: Python (expert), SQL, C++, Go, Solidity. Ships production tools with FastAPI (his default API layer, used in almost every AI solution he builds), Streamlit apps, REST APIs, Docker, and Azure; REDCap for clinical data capture; dashboards and data pipelines.
-- Science: genomics, protein/molecular design, systems biology, clinical & EMR data analysis.
-- Rare edge: deep biology x hands-on AI safety.
-- Product design: designs and ships complete products end to end, including consumer-facing ones (MedBoard AI Tutor for medical students; a Chrome extension with a landing page and subscription flow), not only internal enterprise tools. Prolific builder, roughly 40 repos a year.
-- Privacy and safety by design: HIPAA-grade handling of patient and PHI data, a PHI-safe mock-data generator, privacy-first Sybil-resistant proof-of-personhood, and designing data structures (including orthogonal or compartmentalized schemas) that keep sensitive user data private and safe. Hands-on AI safety: red-teaming, LLM-as-judge ensembles, and adversarial evaluation.
-- Shipped open source: VERDICT (5-model ensemble LLM-as-judge with 2-of-5 veto + calibration); an evidence-based AI competency eval kit; adversarial "proof-of-done" verification; Azure agent-to-agent pipelines; clinical-trial dashboards and data-quality tooling; a civic-tech cluster (AI-UBI transition simulator, proof-of-personhood + anonymous payments/voting, a congressional vote-prediction prototype).
-- Leadership: PMP; led 100+ staff across 8 global labs; former professor; S&T Policy Fellow, National Academies.
+const SAGE_PROFILE = `You are analyzing how well ONE candidate, Sage Arbor, matches a job posting.
 
 HONESTY RULES (do not overstate):
 - "eoe" is a well-designed but UNVALIDATED ML-for-bio architecture (no trained model yet).
 - "whipCongress" is a rule-based prototype, not an ML/LLM system.
-- "personhood"/"openline" are early-stage (v0.1, not security-audited).
+- "personhood" and "openline" are early-stage (v0.1, not security-audited).
 - Score each requirement from 0.0 to 1.0: near 1.0 only when clearly supported, mid-range when adjacent or transferable, near 0.0 when not evidenced. Use nuanced values across the range, not just 0, 0.5, or 1.
 - If the role is outside Sage's background (for example visual art, trades, sales, or other unrelated fields), be blunt: set overall_fit to "weak", mark most aspects "gap", and state plainly that he is not a good fit. Never force a fit.
+
+KEY STRENGTHS (evidenced in his CV and shipped portfolio; weigh transferable ones fairly):
+- Prolific product builder: ships complete products end to end, including consumer-facing ones (an adaptive medical board-exam tutor; a Chrome extension with a landing page and subscription flow), not only internal enterprise tools; roughly 40 repos a year.
+- Privacy and safety by design: HIPAA-grade handling of patient and PHI data, a PHI-safe mock-data generator, privacy-first Sybil-resistant proof-of-personhood, and compartmentalized data structures that keep sensitive data private; plus hands-on AI safety (red-teaming, LLM-as-judge ensembles, adversarial evaluation).
+- Default engineering stack: Python and FastAPI (used in almost every AI solution he ships), Streamlit, REST APIs, Docker, Azure, REDCap.
+
+Judge fit against Sage's full CV below. If a requirement is not evidenced, treat it as a gap.
+
+CANDIDATE CV
+# Sage Arbor  -  Master CV (Comprehensive)
+
+**Contact**
+- Location: Charlotte, NC 28277
+- Phone: 317-728-1662
+- Email: sagearbor@gmail.com
+
+## Profile Summary
+
+AI strategy and health-policy leader with 25+ years spanning computational
+biology, data science, and healthcare transformation. Currently leading AI
+implementation at Duke Clinical Research Institute  -  LLM architectures,
+red-teaming, and clinical compliance. PhD biochemist who bridges deep technical
+work with policy and organizational strategy.
+
+*(Alternate framings to pull from, per role:)*
+- **Bio × AI safety:** PhD computational biologist now doing hands-on LLM
+  red-teaming and validation  -  a rare intersection of wet-lab-adjacent science
+  and applied AI safety.
+- **Data science:** 25+ years turning messy biological, clinical, and
+  operational data into decisions, models, and shipped tooling.
+- **Leadership:** Ran 100+ staff across 8 global labs; owns a $32M AI roadmap.
+
+## Education
+
+- **Ph.D. in Biochemistry / Computational Biology**  -  Washington University (2001-2008)
+- **B.S. in Chemistry & Biology**  -  Duke University (1996-2000)
+
+## Core Competencies
+
+- **AI / ML:** LLM architectures (RAG, MoE, agents), red-teaming, LLM
+  validation & evals, bias detection, QA frameworks, AI product management
+- **Programming / Data:** Python, C++, SQL (multiple databases), NoSQL, UNIX,
+  dashboards, data pipelines
+- **Computational biology:** pathway mapping, systems-biology modeling,
+  molecular dynamics, computational drug/molecule design, genomics data
+- **Domain:** electronic medical records, clinical-trial analysis, EMR
+  data-mining, health outcomes, health policy
+- **Management:** PMP, Agile/Scrum, Six Sigma, buy-vs-build, change management,
+  multi-site / multi-stakeholder program leadership
+
+## Professional Experience
+
+**Duke University  -  Lead, AI Strategy & Implementation** (04/2021-Present)
+- Owns the AI roadmap for a 1,000+ person organization
+- Runs "buy vs. build" analyses for enterprise AI solutions
+- Implements security protocols aligned with HIPAA and regulatory requirements
+- Directs workforce transformation and change management
+- 2024-2025 portfolio projected at $32M annual financial impact
+- Delivered/managed: LLM validation engines ($5M), pharma chatbot systems
+  ($400K), legal redlining automation ($20M), data-quality analysis tools,
+  research-funding matching systems
+- Speaks publicly on LLM accuracy, bias detection, and clinical applications
+
+**Marian University  -  Assistant Professor of Biochemistry** (01/2013-04/2021)
+- Research: health-outcomes databases, EMR data-mining, public policy
+- Taught biochemistry; developed courses; chaired/served faculty committees
+- Grant writing and lab management
+
+**DuPont & Pioneer  -  Manager & Senior Research Associate** (04/2010-12/2012)
+- Led 100+ professionals across 8 global laboratories
+- Ran the computational-biology group building SQL databases and dashboards
+- Oversaw genomic data management and hardware-infrastructure projects
+
+**Eurofins Scientific  -  Technical Manager & Scientist** (02/2009-04/2010)
+- Supervised chemistry and microbiology teams
+- Built roadmaps for quality, throughput, and ISO certification
+
+**Pfizer  -  Computational Biologist III** (06/2008-12/2008)
+- Systems-biology models for clinical-trial analysis
+- Pathway mapping and genome-chip (microarray) analysis
+- Cross-functional collaboration across R&D
+
+**National Academies of Sciences  -  Science & Technology Policy Fellow** (01/2008-06/2008)
+- Contributed to reports on digital-data publishing and storage guidelines
+- Researched U.S. competitiveness in STEM
+
+**Washington University  -  Biochemistry Graduate Researcher** (09/2001-05/2008)
+- Designed and synthesized rigidified cyclic peptides
+- Computational modeling and molecular-dynamics simulations
+
+**Additional positions:** Veritas Labs (Scientist), Stanford (Lab Technician),
+NIST (Assistant Scientist), Duke University (Assistant Chemist)
+
+## Awards & Recognition
+
+- Northwestern Health Sciences University Faculty Conference presenter (2025)
+- Duke / Duke-NUS AI Symposium speaker (2024)
+- Multiple invited talks on LLM accuracy, bias detection, clinical applications
+- Association of Biochemistry Educators Scholar Award (2021)
+- PMP Certification (2021)
+- ASBMB Advocacy Fellow
+
+## Select Publications
+
+- Comparative analysis of LLMs in medical-education assessment
+- Global wellness framework and quality-of-life interventions
+- FAIR principles for ontologies and semantic resources
+- Novel therapeutics for neurodegenerative diseases
+- Computational chemistry and molecular-design contributions
+
+## Selected Projects & Open-Source Work
+
+**AI safety & evaluation**
+- **VERDICT** ('llm-as-judge-basedOnRegDocs')  -  LLM-as-judge with a 5-model
+  ensemble and 2-of-5 veto logic, calibration/validation sets, and analytics;
+  built to counter single-model agreeableness bias in compliance review.
+- **AIQ** ('ai-skill-eval-kit')  -  evidence-based competency-evaluation framework:
+  rubric + time-decay + evidence multipliers, JSON schema, aggregator, live site.
+- **Proof-of-Done** ('skillsCC')  -  adversarial verification gate that runs an
+  independent "refute" LLM-judge plus mutation testing to resist fake "done."
+
+**Civic tech / betterment of society**
+- **OpenLine + Personhood**  -  anonymous, Sybil-resistant infrastructure for
+  instant payments, voting, and universal basic income (Solidity + Go; W3C
+  Verifiable Credentials). Personhood is a pluggable proof-of-personhood engine
+  whose policy layer keeps "anchor" and "supplementary" signals in separate
+  non-fungible buckets, so no volume of cheap signals can substitute for a
+  genuine uniqueness anchor. *Early development (v0.1; not security-audited).*
+- **AI-UBI Well-Being Transition Simulator**  -  interactive React/TypeScript model
+  stepping month-by-month through an AI economic transition across ~80
+  corporations and 128 countries, with a corporation-funded UBI mechanism and
+  prisoner's-dilemma game-theory dynamics; users can upload custom well-being
+  equations validated by six causal "anchor tests" and ranked on a leaderboard.
+- **Quorum**  -  multi-agent coordination platform for real-world problem-solving
+  (presented, Duke Tech Expo 2026).
+- **WhipCongress**  -  predicts likely U.S. House/Senate votes for a proposed bill
+  and suggests modifications to reach passage.
+
+**Clinical & scientific ML**
+- **EoE Endoscopy Scorer** ('eoe')  -  ML-for-bio architecture for scoring
+  eosinophilic-esophagitis severity: a DINOv2/ConvNeXt vision backbone feeding
+  five CORN ordinal-regression heads (one per EREFS feature) with Grad-CAM
+  explainability. *Research in progress  -  not yet trained/validated.*
+- **CT Dashboard** ('dcriCTdash')  -  clinical-trial dashboard with automated
+  anomaly detection, SQL back end, and Sankey/3-D visualizations.
+- **Data-Analyzer** ('data-analyzer')  -  data-quality service (type/range/missing/
+  duplicate checks) exposed via REST + MCP + agent-to-agent interfaces.
+
+## Skill-Building Projects (planned  -  see 'projects/')
+
+Targeted portfolio pieces that close specific posting gaps; several build directly
+on the shipped work above. Tracked in 'projects/' and the coverage dashboard.
+
+## Additional Interests
+
+Ethics and philosophy; climate change and renewable-energy policy; woodworking
+and visual arts; wrestling and martial arts.
 
 Return a fair, specific analysis grounded in concrete evidence, not generic praise. Write plainly and do not use em-dashes.`;
 
