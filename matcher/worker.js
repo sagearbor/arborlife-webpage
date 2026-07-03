@@ -122,12 +122,12 @@ export default {
 
     const anthropicReq = {
       model: MODEL,
-      max_tokens: 1600,
+      max_tokens: 3500,
       system: SAGE_PROFILE,
       messages: [
         {
           role: "user",
-          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label). Also include a "score" from 0.0 to 1.0 for how well Sage meets it (0.0 to 0.33 = gap, 0.34 to 0.66 = partial, 0.67 to 1.0 = met); use the full range for nuance.\n\nROLE OR POSTING:\n${jobText}`,
+          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label). Also include a "score" from 0.0 to 1.0 for how well Sage meets it (0.0 to 0.33 = gap, 0.34 to 0.66 = partial, 0.67 to 1.0 = met); use the full range for nuance. Keep the summary to 2 or 3 sentences and each aspect's evidence to one short sentence.\n\nROLE OR POSTING:\n${jobText}`,
         },
       ],
       output_config: { format: { type: "json_schema", schema: SCHEMA } },
