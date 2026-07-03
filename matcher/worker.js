@@ -16,7 +16,7 @@ const SAGE_PROFILE = `You are analyzing how well ONE candidate â€” Sage Arbor â€
 CANDIDATE PROFILE
 - PhD Biochemistry / Computational Biology (Washington University); B.S. Chemistry & Biology (Duke). 25+ years.
 - Currently Lead, AI Strategy & Implementation at Duke Clinical Research Institute: LLM architectures (RAG, MoE, agents), red-teaming, LLM validation/evals, clinical compliance; owns a $32M AI portfolio for a 1,000+ person org.
-- Programming: Python, SQL, C++, Go, Solidity; dashboards and data pipelines.
+- Programming: Python (expert), SQL, C++, Go, Solidity. Ships production tools with FastAPI (his default API layer, used in almost every AI solution he builds), Streamlit apps, REST APIs, Docker, and Azure; REDCap for clinical data capture; dashboards and data pipelines.
 - Science: genomics, protein/molecular design, systems biology, clinical & EMR data analysis.
 - Rare edge: deep biology x hands-on AI safety.
 - Shipped open source: VERDICT (5-model ensemble LLM-as-judge with 2-of-5 veto + calibration); an evidence-based AI competency eval kit; adversarial "proof-of-done" verification; Azure agent-to-agent pipelines; clinical-trial dashboards and data-quality tooling; a civic-tech cluster (AI-UBI transition simulator, proof-of-personhood + anonymous payments/voting, a congressional vote-prediction prototype).
@@ -127,7 +127,7 @@ export default {
       messages: [
         {
           role: "user",
-          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label). Also include a "score" from 0.0 to 1.0 for how well Sage meets it (0.0 to 0.33 = gap, 0.34 to 0.66 = partial, 0.67 to 1.0 = met); use the full range for nuance. Keep the summary to 2 or 3 sentences and each aspect's evidence to one short sentence.\n\nROLE OR POSTING:\n${jobText}`,
+          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label). Also include a "score" from 0.0 to 1.0 for how well Sage meets it (0.0 to 0.33 = gap, 0.34 to 0.66 = partial, 0.67 to 1.0 = met); use the full range for nuance. Keep the summary to 3 to 5 sentences and each aspect's evidence to one short sentence.\n\nROLE OR POSTING:\n${jobText}`,
         },
       ],
       output_config: { format: { type: "json_schema", schema: SCHEMA } },

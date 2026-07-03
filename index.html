@@ -219,6 +219,14 @@ a.went-private{cursor:default;text-decoration:none}
 .ms{font-weight:700;white-space:nowrap;text-transform:capitalize}
 .ms-met{color:var(--t-civic)}.ms-partial{color:var(--t-ent)}.ms-gap{color:var(--accent)}
 .match-note{color:var(--faint);font-size:.78rem;margin-top:.8rem}
+  .match-rows{margin-top:.9rem;display:flex;flex-direction:column}
+  .match-row{display:grid;grid-template-columns:46px 1fr;gap:.15rem .6rem;align-items:baseline;padding:.55rem .1rem;border-top:1px solid var(--line)}
+  .mr-score{font-weight:800;font-size:.92rem}
+  .mr-label{font-weight:700;font-size:.9rem}
+  .mr-ev{grid-column:2;font-size:.82rem;color:var(--muted);line-height:1.45}
+  .mr-met .mr-score{color:var(--t-civic)}
+  .mr-partial .mr-score{color:var(--t-ent)}
+  .mr-gap .mr-score{color:var(--accent)}
 
 /* ---------- FOOTER ---------- */
 footer{border-top:1px solid var(--line);padding:2.4rem 0;text-align:center}
@@ -575,19 +583,23 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
   function render(d) {
     if (d.error) { out.innerHTML = '<p class="match-note">' + esc(d.error) + '</p>'; return; }
     var fit = (d.overall_fit || 'moderate').toLowerCase();
-    var A = d.aspects || [];
+    var A = (d.aspects || []).slice().sort(function (a, b) { return mScore(b) - mScore(a); });
     var html = '<span class="match-fit mf-' + esc(fit) + '">' + esc(fit) + ' fit</span>';
     html += '<p>' + esc(d.summary || '') + '</p>';
+    var useRadar = A.length > 0 && A.length <= 5;
     if (A.length) {
-      html += '<p class="match-note" style="margin:.7rem 0 .1rem;font-weight:700">Option A: bar chart</p>';
-      html += '<canvas id="matchChart" style="width:100%;height:auto;cursor:pointer"></canvas><p id="matchDetail" class="match-note" style="min-height:1.3em">Tap a bar for detail.</p>';
-      html += '<p class="match-note" style="margin:1rem 0 .1rem;font-weight:700">Option B: radar</p>';
-      html += '<canvas id="matchRadar" style="width:100%;height:auto"></canvas>';
-      html += '<p class="match-note" style="opacity:.75">Comparing both. Tell me which you prefer and I will keep just that one.</p>';
+      if (useRadar) { html += '<canvas id="matchRadar" style="width:100%;height:auto"></canvas>'; }
+      else { html += '<canvas id="matchChart" style="width:100%;height:auto;cursor:pointer"></canvas><p id="matchDetail" class="match-note" style="min-height:1.1em"></p>'; }
+      html += '<div class="match-rows">';
+      A.forEach(function (a) {
+        var v = mScore(a), band = v >= 0.67 ? 'met' : v >= 0.34 ? 'partial' : 'gap';
+        html += '<div class="match-row mr-' + band + '"><span class="mr-score">' + Math.round(v * 100) + '%</span><span class="mr-label">' + esc(a.label || a.requirement || '') + '</span><span class="mr-ev">' + esc(a.evidence || '') + '</span></div>';
+      });
+      html += '</div>';
     }
     if (d.top_gaps && d.top_gaps.length) { html += '<p class="match-note">Gaps to close: ' + d.top_gaps.map(esc).join(' &middot; ') + '</p>'; }
     out.innerHTML = html;
-    if (A.length) { drawMatchChart(A); drawMatchRadar(A); }
+    if (A.length) { if (useRadar) drawMatchRadar(A); else drawMatchChart(A); }
   }
   function mCssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
   function mScore(a){ if (typeof a.score === 'number') return Math.max(0, Math.min(1, a.score)); var s = (a.status || '').toLowerCase(); return s === 'met' ? 0.85 : s === 'partial' ? 0.5 : 0.2; }
