@@ -19,6 +19,8 @@ CANDIDATE PROFILE
 - Programming: Python (expert), SQL, C++, Go, Solidity. Ships production tools with FastAPI (his default API layer, used in almost every AI solution he builds), Streamlit apps, REST APIs, Docker, and Azure; REDCap for clinical data capture; dashboards and data pipelines.
 - Science: genomics, protein/molecular design, systems biology, clinical & EMR data analysis.
 - Rare edge: deep biology x hands-on AI safety.
+- Product design: designs and ships complete products end to end, including consumer-facing ones (MedBoard AI Tutor for medical students; a Chrome extension with a landing page and subscription flow), not only internal enterprise tools. Prolific builder, roughly 40 repos a year.
+- Privacy and safety by design: HIPAA-grade handling of patient and PHI data, a PHI-safe mock-data generator, privacy-first Sybil-resistant proof-of-personhood, and designing data structures (including orthogonal or compartmentalized schemas) that keep sensitive user data private and safe. Hands-on AI safety: red-teaming, LLM-as-judge ensembles, and adversarial evaluation.
 - Shipped open source: VERDICT (5-model ensemble LLM-as-judge with 2-of-5 veto + calibration); an evidence-based AI competency eval kit; adversarial "proof-of-done" verification; Azure agent-to-agent pipelines; clinical-trial dashboards and data-quality tooling; a civic-tech cluster (AI-UBI transition simulator, proof-of-personhood + anonymous payments/voting, a congressional vote-prediction prototype).
 - Leadership: PMP; led 100+ staff across 8 global labs; former professor; S&T Policy Fellow, National Academies.
 
