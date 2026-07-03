@@ -248,6 +248,7 @@ footer .fine{color:var(--faint);font-size:.78rem}
     <ul class="nav-links" id="navLinks">
       <li><a href="#services">Services</a></li>
       <li><a href="#work">Work</a></li>
+      <li><a href="#match">AI match</a></li>
       <li><a href="#about">About</a></li>
     </ul>
     <button class="theme-btn" id="themeBtn" aria-label="Toggle light / dark theme" title="Toggle theme">
@@ -272,6 +273,7 @@ footer .fine{color:var(--faint);font-size:.78rem}
         <a href="#contact" class="btn btn-primary">Work with me
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a href="#work" class="btn btn-ghost">See the work</a>
+        <a href="#match" class="btn btn-ghost">Try my AI &#9656;</a>
       </div>
       <div class="hero-meta">
         <span><b>PhD</b> Biochem / Computational Biology</span>
@@ -463,7 +465,7 @@ footer .fine{color:var(--faint);font-size:.78rem}
 <!-- JOB MATCH (hidden until MATCHER_ENDPOINT is set in the script below) -->
 <section id="match" hidden><div class="wrap">
   <div class="sec-head reveal">
-    <span class="eyebrow">Try it</span>
+    <span class="eyebrow">Ask my AI</span>
     <h2 class="serif">Does my background fit your role?</h2>
     <p>Paste a job description (or a link) and get a live analysis of how I match - met, partial, and gaps. Powered by Claude; honest by design.</p>
   </div>
@@ -638,6 +640,50 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
         else if (r.ok) { try { sessionStorage.setItem(key, 'public'); } catch (e) {} }
       })
       .catch(function () { /* network / CORS error: leave the link as-is */ });
+  });
+})();
+
+// EASTER EGG: click the accent dot after "Sage Arbor" for a little orbital show (nod to the rotating megacity).
+(function () {
+  var dot = document.querySelector('.brand .dot');
+  if (!dot) return;
+  dot.style.cursor = 'pointer';
+  dot.addEventListener('click', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    if (document.getElementById('eggCanvas')) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var c = document.createElement('canvas');
+    c.id = 'eggCanvas';
+    c.style.cssText = 'position:fixed;inset:0;z-index:9999;cursor:pointer;';
+    document.body.appendChild(c);
+    var ctx = c.getContext('2d');
+    var DPR = Math.min(window.devicePixelRatio || 1, 2), W, H, cx, cy;
+    function size() { W = c.width = innerWidth * DPR; H = c.height = innerHeight * DPR; c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px'; cx = W / 2; cy = H / 2; }
+    size(); window.addEventListener('resize', size);
+    var accent = (getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#c65d3b').trim();
+    var rings = 8, start = performance.now(), dur = 4200, alive = true;
+    function cleanup() { alive = false; window.removeEventListener('resize', size); if (c.parentNode) c.remove(); }
+    function frame(t) {
+      if (!alive) return;
+      var el = t - start, p = Math.min(el / dur, 1);
+      var fade = p < 0.15 ? p / 0.15 : (p > 0.8 ? (1 - p) / 0.2 : 1);
+      ctx.clearRect(0, 0, W, H);
+      var base = Math.min(W, H) * 0.44;
+      for (var i = 0; i < rings; i++) {
+        var rr = (i + 1) / rings * base;
+        var n = 6 + i * 3, spd = (0.18 + i * 0.05) * (i % 2 ? -1 : 1), rot = el * 0.001 * spd;
+        for (var j = 0; j < n; j++) {
+          var a = rot + j * 2 * Math.PI / n;
+          ctx.beginPath();
+          ctx.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 3 * DPR, 0, 7);
+          ctx.globalAlpha = 0.85 * fade; ctx.fillStyle = accent; ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+      if (p < 1) requestAnimationFrame(frame); else cleanup();
+    }
+    c.addEventListener('click', cleanup);
+    requestAnimationFrame(frame);
   });
 })();
 </script>
