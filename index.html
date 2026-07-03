@@ -554,7 +554,7 @@ document.querySelectorAll('#stats').forEach(function (el) { cio.observe(el); });
 // JOB-MATCH WIDGET - paste your deployed Cloudflare Worker URL here to enable it.
 // Left empty, the "Try it" section stays hidden, so the site is safe to ship as-is.
 // See matcher/README.md for the 5-minute deploy.
-var MATCHER_ENDPOINT = ""; // e.g. "https://arborlife-matcher.<your-subdomain>.workers.dev"
+var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
 (function () {
   if (!MATCHER_ENDPOINT) return; // stays hidden until configured
   var sec = document.getElementById('match');

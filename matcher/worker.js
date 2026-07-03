@@ -9,7 +9,7 @@
 
 const ALLOWED_ORIGIN = "https://sagearbor.github.io"; // tighten to your site's origin
 const MODEL = "claude-haiku-4-5"; // cost-effective; swap to "claude-sonnet-4-6" for higher quality
-const MAX_INPUT_CHARS = 12000; // bound token cost per request
+const MAX_INPUT_CHARS = 40000; // lenient cap (~10k words); still bounds runaway cost
 
 const SAGE_PROFILE = `You are analyzing how well ONE candidate — Sage Arbor — matches a job posting.
 
