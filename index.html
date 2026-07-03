@@ -655,15 +655,28 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     var url = document.getElementById('matchUrl').value.trim();
     if (!text && !url) { out.innerHTML = '<p class="match-note">Paste a description or a URL first.</p>'; return; }
     btn.disabled = true;
-    out.innerHTML = '<p class="match-note">Analyzing…</p>';
-    fetch(MATCHER_ENDPOINT, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jobText: text, jobUrl: url }),
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { btn.disabled = false; render(d); })
-      .catch(function () { btn.disabled = false; out.innerHTML = '<p class="match-note">Something went wrong - try pasting the text.</p>'; });
+    out.innerHTML = '<p class="match-note">Analyzing your fit, this can take 10 to 20 seconds…</p>';
+    var attempt = 0;
+    function go() {
+      attempt++;
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, 45000);
+      fetch(MATCHER_ENDPOINT, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ jobText: text, jobUrl: url }),
+        signal: ctrl.signal,
+      })
+        .then(function (r) { clearTimeout(timer); return r.json(); })
+        .then(function (d) { btn.disabled = false; render(d); })
+        .catch(function () {
+          clearTimeout(timer);
+          if (attempt < 2) { out.innerHTML = '<p class="match-note">Taking a moment, retrying once…</p>'; go(); return; }
+          btn.disabled = false;
+          out.innerHTML = '<p class="match-note">That request timed out or the connection dropped. Please try again, or paste just the key requirements (shorter is faster).</p>';
+        });
+    }
+    go();
   });
 })();
 

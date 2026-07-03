@@ -103,21 +103,43 @@ export default {
       return jsonResponse({ error: "Invalid JSON body." }, 400, origin);
     }
 
-    let jobText = (body.jobText || "").toString();
-    const jobUrl = (body.jobUrl || "").toString();
+    let jobText = (body.jobText || "").toString().trim();
+    let jobUrl = (body.jobUrl || "").toString().trim();
 
+    // If the text field is really just a link, treat it as a URL.
+    if (!jobUrl && /^https?:\/\/\S+$/i.test(jobText)) { jobUrl = jobText; jobText = ""; }
+
+    let fromUrl = false;
     if (!jobText && jobUrl) {
+      fromUrl = true;
       try {
-        const r = await fetch(jobUrl, { headers: { "User-Agent": "arborlife-matcher" } });
+        const r = await fetch(jobUrl, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+          },
+          redirect: "follow",
+        });
+        if (!r.ok) {
+          return jsonResponse({ error: "Could not read that link (HTTP " + r.status + "). Many job sites (Duke, LinkedIn, Workday) need a login or block automated readers. Please copy the job description and paste it into the box instead." }, 200, origin);
+        }
         jobText = stripHtml(await r.text());
       } catch {
-        return jsonResponse({ error: "Could not fetch that URL — paste the text instead." }, 400, origin);
+        return jsonResponse({ error: "Could not fetch that URL. Please copy the job description and paste it into the box instead." }, 200, origin);
       }
     }
 
     jobText = jobText.slice(0, MAX_INPUT_CHARS).trim();
     if (jobText.length < 10) {
       return jsonResponse({ error: "Type a role, a job description, or paste a link." }, 400, origin);
+    }
+    if (fromUrl) {
+      const low = jobText.toLowerCase();
+      const wall = /(sign in|log in|create (an )?account|join linkedin|enable javascript|access denied|are you a robot|captcha|verify you are human|page (not found|isn't available))/.test(low);
+      if (jobText.length < 400 || (wall && jobText.length < 2500)) {
+        return jsonResponse({ error: "That link opened a login or verification page, not a job posting. Please copy the job description text and paste it into the box instead." }, 200, origin);
+      }
     }
 
     const anthropicReq = {
@@ -127,7 +149,7 @@ export default {
       messages: [
         {
           role: "user",
-          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label). Also include a "score" from 0.0 to 1.0 for how well Sage meets it (0.0 to 0.33 = gap, 0.34 to 0.66 = partial, 0.67 to 1.0 = met); use the full range for nuance. Keep the summary to 3 to 5 sentences and each aspect's evidence to one short sentence.\n\nROLE OR POSTING:\n${jobText}`,
+          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label). Also include a "score" from 0.0 to 1.0 for how well Sage meets it (0.0 to 0.33 = gap, 0.34 to 0.66 = partial, 0.67 to 1.0 = met); use the full range for nuance. Keep the summary to 3 to 5 sentences and each aspect's evidence to one short sentence. Focus on the 8 most important requirements as aspects and do not exceed 10.\n\nROLE OR POSTING:\n${jobText}`,
         },
       ],
       output_config: { format: { type: "json_schema", schema: SCHEMA } },
@@ -158,6 +180,12 @@ export default {
       result = JSON.parse(textBlock.text); // output_config.format guarantees valid JSON
     } catch {
       return jsonResponse({ error: "Could not parse the analysis." }, 502, origin);
+    }
+    const deDash = (s) => (typeof s === "string" ? s.replace(/\s*[—–]\s*/g, " - ") : s);
+    if (result && typeof result === "object") {
+      result.summary = deDash(result.summary);
+      if (Array.isArray(result.aspects)) result.aspects.forEach((a) => { a.label = deDash(a.label); a.requirement = deDash(a.requirement); a.evidence = deDash(a.evidence); });
+      if (Array.isArray(result.top_gaps)) result.top_gaps = result.top_gaps.map(deDash);
     }
     return jsonResponse(result, 200, origin);
   },
