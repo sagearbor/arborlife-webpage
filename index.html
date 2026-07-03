@@ -667,90 +667,75 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
   });
 })();
 
-// EASTER EGG: click the brand dot to cycle through 5 little surprises.
+// EASTER EGG: click the brand dot to step through quotes + animations (static order). Press-and-hold runs it backwards.
 (function () {
   var dot = document.querySelector('.brand .dot');
   if (!dot) return;
   dot.style.cursor = 'pointer';
-  var step = 0;
-  function accent() { return (getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#c65d3b').trim(); }
-  function toast(html, ms) {
-    var t = document.createElement('div');
-    t.style.cssText = 'position:fixed;left:50%;top:76px;transform:translateX(-50%) translateY(-8px);z-index:10000;background:var(--surface-2,#111);color:var(--text,#eee);border:1px solid var(--line-2,#444);border-radius:14px;padding:.7rem 1.1rem;font:600 1rem/1.35 Inter,sans-serif;box-shadow:0 18px 50px rgba(0,0,0,.4);opacity:0;transition:opacity .25s,transform .25s;text-align:center;max-width:80vw';
-    t.innerHTML = html;
+  function accent(){ return (getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#c65d3b').trim(); }
+  function clearAll(){ var t=document.getElementById('eggToast'); if(t) t.remove(); document.querySelectorAll('.egg-rings').forEach(function(e){e.remove();}); }
+  function toast(html){
+    clearAll();
+    var t=document.createElement('div'); t.id='eggToast';
+    t.style.cssText='position:fixed;left:50%;top:80px;transform:translateX(-50%) translateY(-8px);z-index:10000;background:var(--surface-2,#111);color:var(--text,#eee);border:1px solid var(--line-2,#444);border-radius:16px;padding:.95rem 1.25rem;max-width:min(90vw,540px);font:500 1.02rem/1.5 Inter,sans-serif;box-shadow:0 20px 55px rgba(0,0,0,.45);opacity:0;transition:opacity .22s,transform .22s;text-align:center;cursor:pointer';
+    t.innerHTML=html; t.addEventListener('click',function(){t.remove();});
     document.body.appendChild(t);
-    requestAnimationFrame(function () { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
-    setTimeout(function () { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(-8px)'; setTimeout(function () { t.remove(); }, 300); }, ms || 2200);
+    requestAnimationFrame(function(){ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
+    return t;
   }
-  function ringsBehindPhoto() {
-    var wrap = document.querySelector('.hero-photo-wrap');
-    if (!wrap) { orbit(); return; }
-    if (wrap.querySelector('.egg-rings')) return;
-    wrap.style.position = 'relative';
-    var img = wrap.querySelector('img'); if (img) { img.style.position = 'relative'; img.style.zIndex = '1'; }
-    var c = document.createElement('canvas'); c.className = 'egg-rings';
-    c.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;';
-    wrap.insertBefore(c, wrap.firstChild);
-    var DPR = Math.min(window.devicePixelRatio || 1, 2);
-    c.width = wrap.clientWidth * DPR; c.height = wrap.clientHeight * DPR;
-    var ctx = c.getContext('2d'), start = performance.now(), dur = 5000, col = accent(), alive = true;
-    function frame(t) {
-      if (!alive) return;
-      var el = t - start, p = Math.min(el / dur, 1), fade = p < 0.12 ? p / 0.12 : (p > 0.8 ? (1 - p) / 0.2 : 1);
-      var W = c.width, H = c.height, cx = W / 2, cy = H * 0.42, base = Math.min(W, H) * 0.5;
-      ctx.clearRect(0, 0, W, H);
-      for (var i = 0; i < 8; i++) {
-        var rr = (i + 1) / 8 * base, n = 6 + i * 3, spd = (0.18 + i * 0.05) * (i % 2 ? -1 : 1), rot = el * 0.001 * spd;
-        for (var j = 0; j < n; j++) { var a = rot + j * 2 * Math.PI / n; ctx.beginPath(); ctx.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 2.4 * DPR, 0, 7); ctx.globalAlpha = 0.8 * fade; ctx.fillStyle = col; ctx.fill(); }
-      }
-      ctx.globalAlpha = 1;
-      if (p < 1) requestAnimationFrame(frame); else { alive = false; c.remove(); }
-    }
-    requestAnimationFrame(frame);
-  }
-  function orbit() {
-    if (document.getElementById('eggCanvas')) return;
-    var c = document.createElement('canvas'); c.id = 'eggCanvas'; c.style.cssText = 'position:fixed;inset:0;z-index:9999;cursor:pointer;'; document.body.appendChild(c);
-    var ctx = c.getContext('2d'), DPR = Math.min(window.devicePixelRatio || 1, 2); c.width = innerWidth * DPR; c.height = innerHeight * DPR;
-    var start = performance.now(), col = accent(), alive = true; c.addEventListener('click', function () { alive = false; c.remove(); });
-    (function f(t) {
-      if (!alive) return;
-      var el = t - start, p = Math.min(el / 4000, 1), fade = p < 0.15 ? p / 0.15 : (p > 0.8 ? (1 - p) / 0.2 : 1), W = c.width, H = c.height, cx = W / 2, cy = H / 2, base = Math.min(W, H) * 0.44;
-      ctx.clearRect(0, 0, W, H);
-      for (var i = 0; i < 8; i++) { var rr = (i + 1) / 8 * base, n = 6 + i * 3, spd = (0.18 + i * 0.05) * (i % 2 ? -1 : 1), rot = el * 0.001 * spd; for (var j = 0; j < n; j++) { var a = rot + j * 2 * Math.PI / n; ctx.beginPath(); ctx.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 3 * DPR, 0, 7); ctx.globalAlpha = 0.85 * fade; ctx.fillStyle = col; ctx.fill(); } }
-      ctx.globalAlpha = 1;
-      if (p < 1) requestAnimationFrame(f); else { alive = false; c.remove(); }
+  function quote(q,a){ return function(){ toast('<span class="serif" style="font-size:1.14rem;display:block;margin-bottom:.5rem">&ldquo;'+q+'&rdquo;</span><span style="font-size:.8rem;opacity:.6;letter-spacing:.03em">'+a+'</span>'); }; }
+  function say(h){ return function(){ toast(h); }; }
+  function rings(){
+    clearAll();
+    var wrap=document.querySelector('.hero-photo-wrap');
+    if(!wrap){ toast('<span style="font-size:1.1rem">the rings need the hero photo in view</span>'); return; }
+    wrap.style.position='relative'; var img=wrap.querySelector('img'); if(img){img.style.position='relative';img.style.zIndex='1';}
+    var c=document.createElement('canvas'); c.className='egg-rings'; c.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;'; wrap.insertBefore(c,wrap.firstChild);
+    var DPR=Math.min(window.devicePixelRatio||1,2); c.width=wrap.clientWidth*DPR; c.height=wrap.clientHeight*DPR;
+    var ctx=c.getContext('2d'), start=performance.now(), dur=5600, col=accent();
+    (function f(t){ if(!c.parentNode) return; var el=t-start,p=Math.min(el/dur,1),fade=p<0.12?p/0.12:(p>0.82?(1-p)/0.18:1),W=c.width,H=c.height,cx=W/2,cy=H*0.42,base=Math.min(W,H)*0.52;
+      ctx.clearRect(0,0,W,H);
+      for(var i=0;i<8;i++){ var rr=(i+1)/8*base, seg=8+i*2, spd=(0.14+i*0.05)*(i%2?-1:1), rot=el*0.001*spd;
+        for(var j=0;j<seg;j++){ var a=rot+j*2*Math.PI/seg; ctx.beginPath(); ctx.arc(cx+Math.cos(a)*rr, cy+Math.sin(a)*rr, 2.3*DPR,0,7); ctx.globalAlpha=0.75*fade; ctx.fillStyle=col; ctx.fill(); } }
+      ctx.globalAlpha=1; if(p<1) requestAnimationFrame(f); else c.remove();
     })(start);
   }
-  function confetti() {
-    var c = document.createElement('canvas'); c.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;'; document.body.appendChild(c);
-    var ctx = c.getContext('2d'), DPR = Math.min(window.devicePixelRatio || 1, 2); c.width = innerWidth * DPR; c.height = innerHeight * DPR;
-    var cols = [accent(), '#6cc39a', '#7aa8f2', '#b79cf0', '#e9c46a'], P = [];
-    for (var i = 0; i < 130; i++) P.push({ x: c.width / 2, y: 80 * DPR, vx: (Math.random() - 0.5) * 11 * DPR, vy: (Math.random() * -6 - 3) * DPR, g: 0.18 * DPR, s: (4 + Math.random() * 4) * DPR, c: cols[i % cols.length], r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4 });
-    var start = performance.now();
-    (function f(t) {
-      var el = t - start; ctx.clearRect(0, 0, c.width, c.height); var live = false;
-      P.forEach(function (p) { p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; if (p.y < c.height + 20) live = true; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha = Math.max(0, 1 - el / 2600); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s); ctx.restore(); });
-      if (live && el < 2600) requestAnimationFrame(f); else c.remove();
-    })(start);
-  }
-  function huePulse() {
-    var root = document.documentElement, orig = getComputedStyle(root).getPropertyValue('--accent');
-    var start = performance.now(), dur = 3200;
-    (function f(t) {
-      var el = t - start, p = el / dur;
-      if (p >= 1) { root.style.setProperty('--accent', orig.trim()); setTimeout(function () { root.style.removeProperty('--accent'); }, 50); return; }
-      root.style.setProperty('--accent', 'hsl(' + Math.round(360 * p) + ' 70% 60%)'); requestAnimationFrame(f);
-    })(start);
-  }
-  var effects = [
-    function () { toast('<span style="font-size:1.5rem">42.</span><br><span style="font-size:.75rem;opacity:.7">the answer, probably</span>'); },
-    ringsBehindPhoto,
-    confetti,
-    function () { toast('&#127793; built by a human, shipped with an AI. <a href="#match" style="color:var(--accent);text-decoration:none">meet it &#9656;</a>', 3400); },
-    huePulse
+  var items = [
+    quote('When the wind of change blows, some build walls while others build windmills.', 'Chinese proverb'),
+    rings,
+    quote('I like to pay taxes. With them I buy civilization.', 'Oliver Wendell Holmes Jr.'),
+    say('<span style="font-size:1.6rem">42?</span><br><span style="font-size:.78rem;opacity:.6">the answer, probably</span>'),
+    quote('Every person is guilty of all the good they did not do.', 'Voltaire'),
+    quote('The saddest aspect of life right now is that science gathers knowledge faster than society gathers wisdom.', 'Isaac Asimov'),
+    say('<span style="font-size:.95rem">Off the clock: woodworking and building furniture.</span>'),
+    quote("I would rather have questions that can't be answered than answers that can't be questioned.", 'Richard Feynman'),
+    quote('A society grows great when old people plant trees in whose shade they shall never sit.', 'Greek proverb'),
+    say('Built by a human, shipped with an AI. <a href="#match" style="color:var(--accent);text-decoration:none">meet it &#9656;</a>'),
+    quote('Try not to become a person of success, but rather a person of value.', 'Albert Einstein'),
+    rings,
+    quote('Reality must take precedence over public relations, for Nature cannot be fooled.', 'Richard Feynman'),
+    say('<span style="font-size:.95rem">Also: wrestling, martial arts, and arguing about ethics.</span>'),
+    quote('Act as if what you do makes a difference. It does.', 'William James'),
+    say('<span style="font-size:.9rem;opacity:.85">Currently: rebuilding VERDICT, learning mechanistic interpretability, and pointing an AI at my own resume.</span>'),
+    quote('The greatest threat to our planet is the belief that someone else will save it.', 'Robert Swan'),
+    quote('Injustice anywhere is a threat to justice everywhere.', 'Martin Luther King Jr.'),
+    say('<span class="serif" style="font-size:1.05rem;line-height:1.6">models learn our world,<br>we should learn what they learned,<br>before we trust them</span>'),
+    quote('No one is useless in this world who lightens the burdens of another.', 'Charles Dickens'),
+    quote('The credit belongs to the one who is actually in the arena.', 'Theodore Roosevelt'),
+    quote('We shape our tools, and thereafter our tools shape us.', 'John Culkin'),
+    quote('The best way to predict the future is to invent it.', 'Alan Kay')
   ];
-  dot.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); effects[step % effects.length](); step++; });
+  var idx = -1, holdTimer = null, holdInt = null, held = false;
+  function show(){ var it = items[((idx % items.length) + items.length) % items.length]; it(); }
+  function next(){ idx++; show(); }
+  function prev(){ idx--; show(); }
+  dot.addEventListener('click', function (e){ e.preventDefault(); e.stopPropagation(); if (held){ held = false; return; } next(); });
+  function startHold(){ held = false; holdTimer = setTimeout(function(){ held = true; prev(); holdInt = setInterval(prev, 480); }, 350); }
+  function endHold(){ if (holdTimer){ clearTimeout(holdTimer); holdTimer = null; } if (holdInt){ clearInterval(holdInt); holdInt = null; } }
+  dot.addEventListener('pointerdown', startHold);
+  dot.addEventListener('pointerup', endHold);
+  dot.addEventListener('pointerleave', endHold);
+  dot.addEventListener('pointercancel', endHold);
 })();
 </script>
 </body>
