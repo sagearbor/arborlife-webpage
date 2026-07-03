@@ -27,8 +27,9 @@ HONESTY RULES (do not overstate):
 - "whipCongress" is a rule-based prototype, not an ML/LLM system.
 - "personhood"/"openline" are early-stage (v0.1, not security-audited).
 - Mark a requirement "met" only when clearly supported, "partial" when adjacent/transferable, "gap" when not evidenced.
+- If the role is outside Sage's background (for example visual art, trades, sales, or other unrelated fields), be blunt: set overall_fit to "weak", mark most aspects "gap", and state plainly that he is not a good fit. Never force a fit.
 
-Return a fair, specific analysis grounded in concrete evidence — not generic praise.`;
+Return a fair, specific analysis grounded in concrete evidence, not generic praise. Write plainly and do not use em-dashes.`;
 
 const SCHEMA = {
   type: "object",
@@ -114,8 +115,8 @@ export default {
     }
 
     jobText = jobText.slice(0, MAX_INPUT_CHARS).trim();
-    if (jobText.length < 40) {
-      return jsonResponse({ error: "Please paste a job description (or a fetchable URL)." }, 400, origin);
+    if (jobText.length < 10) {
+      return jsonResponse({ error: "Type a role, a job description, or paste a link." }, 400, origin);
     }
 
     const anthropicReq = {
@@ -125,7 +126,7 @@ export default {
       messages: [
         {
           role: "user",
-          content: `Analyze how well Sage matches this posting. Be specific and honest.\n\nJOB POSTING:\n${jobText}`,
+          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest.\n\nROLE OR POSTING:\n${jobText}`,
         },
       ],
       output_config: { format: { type: "json_schema", schema: SCHEMA } },

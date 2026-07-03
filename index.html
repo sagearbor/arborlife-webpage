@@ -517,13 +517,10 @@ document.getElementById('themeBtn').addEventListener('click', function () {
   try { localStorage.setItem('theme', next); } catch (e) {}
 });
 
-// NAV: shadow + hide-on-scroll-down
-var nav = document.getElementById('nav'), last = 0;
+// NAV: shadow on scroll; stays locked to the top
+var nav = document.getElementById('nav');
 window.addEventListener('scroll', function () {
-  var y = window.scrollY;
-  nav.classList.toggle('scrolled', y > 10);
-  if (y > last && y > 120) nav.classList.add('hidden'); else nav.classList.remove('hidden');
-  last = y;
+  nav.classList.toggle('scrolled', window.scrollY > 10);
 }, { passive: true });
 
 // MOBILE MENU
@@ -687,18 +684,19 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
   function say(h){ return function(){ toast(h); }; }
   function rings(){
     clearAll();
-    var wrap=document.querySelector('.hero-photo-wrap');
-    if(!wrap){ toast('<span style="font-size:1.1rem">the rings need the hero photo in view</span>'); return; }
-    wrap.style.position='relative'; var img=wrap.querySelector('img'); if(img){img.style.position='relative';img.style.zIndex='1';}
-    var c=document.createElement('canvas'); c.className='egg-rings'; c.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;'; wrap.insertBefore(c,wrap.firstChild);
-    var DPR=Math.min(window.devicePixelRatio||1,2); c.width=wrap.clientWidth*DPR; c.height=wrap.clientHeight*DPR;
-    var ctx=c.getContext('2d'), start=performance.now(), dur=5600, col=accent();
-    (function f(t){ if(!c.parentNode) return; var el=t-start,p=Math.min(el/dur,1),fade=p<0.12?p/0.12:(p>0.82?(1-p)/0.18:1),W=c.width,H=c.height,cx=W/2,cy=H*0.42,base=Math.min(W,H)*0.52;
-      ctx.clearRect(0,0,W,H);
-      for(var i=0;i<8;i++){ var rr=(i+1)/8*base, seg=8+i*2, spd=(0.14+i*0.05)*(i%2?-1:1), rot=el*0.001*spd;
-        for(var j=0;j<seg;j++){ var a=rot+j*2*Math.PI/seg; ctx.beginPath(); ctx.arc(cx+Math.cos(a)*rr, cy+Math.sin(a)*rr, 2.3*DPR,0,7); ctx.globalAlpha=0.75*fade; ctx.fillStyle=col; ctx.fill(); } }
-      ctx.globalAlpha=1; if(p<1) requestAnimationFrame(f); else c.remove();
-    })(start);
+    var wrap = document.querySelector('.hero-photo-wrap');
+    if(!wrap){ toast('<span style="font-size:1.05rem">the rotunda needs the hero photo in view</span>'); return; }
+    wrap.style.position = 'relative';
+    var img = wrap.querySelector('img'); if(img){ img.style.position='relative'; img.style.zIndex='1'; }
+    var v = document.createElement('video');
+    v.className = 'egg-rings';
+    v.src = 'img/rotunda.mp4'; v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
+    v.setAttribute('muted',''); v.setAttribute('playsinline','');
+    v.style.cssText = 'position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:150%;height:150%;object-fit:cover;z-index:0;opacity:0;transition:opacity .5s;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 45%,#000 42%,transparent 68%);mask-image:radial-gradient(circle at 50% 45%,#000 42%,transparent 68%);';
+    wrap.insertBefore(v, wrap.firstChild);
+    if(v.play) v.play().catch(function(){});
+    requestAnimationFrame(function(){ v.style.opacity = '0.95'; });
+    setTimeout(function(){ if(v.parentNode){ v.style.opacity='0'; setTimeout(function(){ v.remove(); }, 500); } }, 8000);
   }
   var items = [
     quote('When the wind of change blows, some build walls while others build windmills.', 'Chinese proverb'),
