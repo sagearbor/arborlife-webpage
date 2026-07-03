@@ -578,14 +578,36 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     var A = d.aspects || [];
     var html = '<span class="match-fit mf-' + esc(fit) + '">' + esc(fit) + ' fit</span>';
     html += '<p>' + esc(d.summary || '') + '</p>';
-    if (A.length) { html += '<canvas id="matchChart" style="width:100%;height:auto;cursor:pointer;margin-top:.4rem"></canvas><p id="matchDetail" class="match-note" style="min-height:1.3em">Tap a bar for detail.</p>'; }
+    if (A.length) {
+      html += '<p class="match-note" style="margin:.7rem 0 .1rem;font-weight:700">Option A: bar chart</p>';
+      html += '<canvas id="matchChart" style="width:100%;height:auto;cursor:pointer"></canvas><p id="matchDetail" class="match-note" style="min-height:1.3em">Tap a bar for detail.</p>';
+      html += '<p class="match-note" style="margin:1rem 0 .1rem;font-weight:700">Option B: radar</p>';
+      html += '<canvas id="matchRadar" style="width:100%;height:auto"></canvas>';
+      html += '<p class="match-note" style="opacity:.75">Comparing both. Tell me which you prefer and I will keep just that one.</p>';
+    }
     if (d.top_gaps && d.top_gaps.length) { html += '<p class="match-note">Gaps to close: ' + d.top_gaps.map(esc).join(' &middot; ') + '</p>'; }
     out.innerHTML = html;
-    if (A.length) drawMatchChart(A);
+    if (A.length) { drawMatchChart(A); drawMatchRadar(A); }
   }
   function mCssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
   function mScore(a){ if (typeof a.score === 'number') return Math.max(0, Math.min(1, a.score)); var s = (a.status || '').toLowerCase(); return s === 'met' ? 0.85 : s === 'partial' ? 0.5 : 0.2; }
   function mBandCol(v){ return (v >= 0.67 ? mCssVar('--t-civic') : v >= 0.34 ? mCssVar('--t-ent') : mCssVar('--accent')) || '#e0805c'; }
+  function drawMatchRadar(A){
+    var c = document.getElementById('matchRadar'); if (!c) return;
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var cssW = c.clientWidth || 500, cssH = 360;
+    c.style.height = cssH + 'px'; c.width = cssW * DPR; c.height = cssH * DPR;
+    var ctx = c.getContext('2d'); ctx.scale(DPR, DPR); ctx.clearRect(0, 0, cssW, cssH);
+    var N = A.length, cx = cssW / 2, cy = cssH / 2, R = Math.min(cssW, cssH) / 2 - 58;
+    function pt(i, r){ var a = -Math.PI / 2 + i * 2 * Math.PI / N; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; }
+    var line = mCssVar('--line') || 'rgba(255,255,255,.14)', mut = mCssVar('--muted') || '#999', acc = mCssVar('--accent') || '#e0805c';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (var g = 1; g <= 4; g++) { ctx.beginPath(); for (var i = 0; i <= N; i++) { var p = pt(i % N, R * g / 4); if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.strokeStyle = line; ctx.lineWidth = 1; ctx.stroke(); }
+    for (var i = 0; i < N; i++) { var e = pt(i, R); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(e[0], e[1]); ctx.strokeStyle = line; ctx.stroke(); var l = pt(i, R + 16); ctx.fillStyle = mut; ctx.font = '600 9px Inter, sans-serif'; var lab = A[i].label || ''; if (lab.length > 12) lab = lab.slice(0, 11) + '.'; ctx.fillText(lab, l[0], l[1]); }
+    ctx.beginPath(); for (var i = 0; i <= N; i++) { var v = mScore(A[i % N]), p = pt(i % N, R * v); if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.closePath();
+    ctx.fillStyle = 'rgba(224,128,92,.22)'; ctx.fill(); ctx.strokeStyle = acc; ctx.lineWidth = 2; ctx.stroke();
+    for (var i = 0; i < N; i++) { var v = mScore(A[i]), p = pt(i, R * v); ctx.beginPath(); ctx.arc(p[0], p[1], 3, 0, 7); ctx.fillStyle = acc; ctx.fill(); }
+  }
   function drawMatchChart(A){
     var c = document.getElementById('matchChart'); if (!c) return;
     A = A.slice().sort(function (a, b) { return mScore(b) - mScore(a); });
