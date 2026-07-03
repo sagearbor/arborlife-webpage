@@ -748,24 +748,38 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
   }
   function windmill(){
     clearAll();
-    var o = overlay(380, 300), ctx = o.ctx, W = o.w, H = o.h, col = accent();
-    var ground = H * 0.86, bricks = [], bw = 26, bh = 13, wallX = W * 0.12;
-    for (var r = 0; r < 6; r++) { var off = (r % 2) * bw / 2; for (var i = 0; i < 4; i++) { bricks.push({ x: wallX + off + i * (bw + 2), y: ground - (r + 1) * (bh + 2), vx: 0, vy: 0, rot: 0, vr: 0, fell: false }); } }
-    var wx = W * 0.72, wy = H * 0.4, start = performance.now(), knock = 800, dur = 7000;
+    var c = document.createElement('canvas'); c.className = 'egg-rings';
+    var W = 220, H = 180, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    c.style.cssText = 'position:fixed;top:58px;left:22px;z-index:9999;pointer-events:none;width:' + W + 'px;height:' + H + 'px;';
+    c.width = W * DPR; c.height = H * DPR;
+    document.body.appendChild(c);
+    var ctx = c.getContext('2d'); ctx.scale(DPR, DPR);
+    var col = accent(), ground = H * 0.9;
+    var bricks = [], bw = 15, bh = 8, wallX = W * 0.52;
+    for (var r = 0; r < 5; r++) { var off = (r % 2) * bw / 2; for (var i = 0; i < 3; i++) { bricks.push({ x: wallX + off + i * (bw + 2), y: ground - (r + 1) * (bh + 2), vx: 0, vy: 0, rot: 0, vr: 0, fell: false }); } }
+    var wx = W * 0.24, wy = H * 0.34, start = performance.now(), knock = 800, dur = 7000;
+    function blade(a){
+      ctx.save(); ctx.translate(wx, wy); ctx.rotate(a);
+      ctx.beginPath(); ctx.moveTo(0, -3);
+      ctx.quadraticCurveTo(W * 0.10, -5, W * 0.2, 0);
+      ctx.quadraticCurveTo(W * 0.10, 4, 0, 3);
+      ctx.closePath(); ctx.fillStyle = col; ctx.fill(); ctx.restore();
+    }
     (function f(t){
-      if (!o.c.parentNode) return;
+      if (!c.parentNode) return;
       var el = t - start; ctx.clearRect(0, 0, W, H);
       ctx.globalAlpha = 0.4; ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, ground); ctx.lineTo(W, ground); ctx.stroke(); ctx.globalAlpha = 1;
       bricks.forEach(function (b) {
-        if (el > knock && !b.fell) { b.vx = 1 + Math.random() * 2.2; b.vy = -Math.random() * 2; b.vr = (Math.random() - 0.15) * 0.28; b.fell = true; }
-        if (b.fell) { b.vy += 0.32; b.x += b.vx; b.y += b.vy; b.rot += b.vr; if (b.y + bh > ground) { b.y = ground - bh; b.vy *= -0.22; b.vx *= 0.6; b.vr *= 0.5; } }
+        if (el > knock && !b.fell) { b.vx = 0.6 + Math.random() * 1.6; b.vy = -Math.random() * 1.5; b.vr = (Math.random() - 0.1) * 0.26; b.fell = true; }
+        if (b.fell) { b.vy += 0.28; b.x += b.vx; b.y += b.vy; b.rot += b.vr; if (b.y + bh > ground) { b.y = ground - bh; b.vy *= -0.2; b.vx *= 0.6; b.vr *= 0.5; } }
         ctx.save(); ctx.translate(b.x + bw / 2, b.y + bh / 2); ctx.rotate(b.rot); ctx.globalAlpha = 0.9; ctx.fillStyle = col; ctx.fillRect(-bw / 2, -bh / 2, bw - 1, bh - 1); ctx.restore();
       });
-      ctx.globalAlpha = 1; ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(wx, ground); ctx.lineTo(wx, wy); ctx.stroke();
-      var spin = el * 0.004;
-      for (var k = 0; k < 4; k++) { var a = spin + k * Math.PI / 2; ctx.beginPath(); ctx.moveTo(wx, wy); ctx.lineTo(wx + Math.cos(a) * 58, wy + Math.sin(a) * 58); ctx.stroke(); }
-      ctx.beginPath(); ctx.arc(wx, wy, 5, 0, 7); ctx.fillStyle = col; ctx.fill();
-      if (el < dur) requestAnimationFrame(f); else o.c.remove();
+      ctx.globalAlpha = 1; ctx.fillStyle = col;
+      ctx.beginPath(); ctx.moveTo(wx - 3.5, ground); ctx.lineTo(wx - 1.6, wy); ctx.lineTo(wx + 1.6, wy); ctx.lineTo(wx + 3.5, ground); ctx.closePath(); ctx.fill();
+      var spin = el * 0.0035;
+      blade(spin); blade(spin + 2 * Math.PI / 3); blade(spin + 4 * Math.PI / 3);
+      ctx.beginPath(); ctx.arc(wx, wy, 3.2, 0, 7); ctx.fillStyle = col; ctx.fill();
+      if (el < dur) requestAnimationFrame(f); else c.remove();
     })(start);
   }
   function constellation(){
