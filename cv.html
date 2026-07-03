@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sage Arbor - CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf9f5; --ink:#20201d; --mut:#6b675e; --line:#e3ded2;
+    --accent:#c65d3b;      /* warm clay */
+    --accent-soft:#f3e6df;
+    --chip:#efeadd; --chip-ink:#5a5648;
+    --card:#ffffff;
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#eceae3;color:var(--ink);font-family:var(--sans);
+    font-size:13.5px;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{max-width:860px;margin:24px auto;background:var(--paper);
+    box-shadow:0 6px 40px rgba(0,0,0,.12);border-radius:6px;overflow:hidden}
+
+  /* ---- Header ---- */
+  header{padding:34px 40px 26px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#fffdf8,var(--paper))}
+  .name{font-family:var(--serif);font-weight:600;font-size:40px;line-height:1.02;
+    letter-spacing:-.5px;margin:0}
+  .name .dot{color:var(--accent)}
+  .role{font-family:var(--serif);font-size:17px;color:var(--accent);margin:6px 0 0;font-weight:500}
+  .tagline{margin:12px 0 0;max-width:60ch;color:var(--mut);font-size:13px}
+  .contact{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--mut)}
+  .contact b{color:var(--ink);font-weight:600}
+  .contact a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+
+  /* ---- Body grid ---- */
+  .grid{display:grid;grid-template-columns:1fr 2.05fr;gap:0}
+  .rail{padding:26px 26px 30px;border-right:1px solid var(--line);background:#fcfbf6}
+  .main{padding:26px 34px 34px}
+
+  h2{font-family:var(--sans);text-transform:uppercase;letter-spacing:.11em;
+    font-size:11px;font-weight:600;color:var(--accent);margin:0 0 12px}
+  .main h2{margin-top:22px}
+  .main section:first-child h2{margin-top:0}
+  .rail section+section{margin-top:24px}
+
+  /* ---- Rail bits ---- */
+  .kv{margin:0 0 12px}
+  .kv .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:600}
+  .kv .v{font-size:12.5px}
+  .chips{display:flex;flex-wrap:wrap;gap:5px}
+  .chip{background:var(--chip);color:var(--chip-ink);border-radius:20px;
+    padding:3px 9px;font-size:11px;font-weight:500;white-space:nowrap}
+  .skillcat{font-size:11px;font-weight:600;color:var(--ink);margin:12px 0 5px}
+  .skillcat:first-of-type{margin-top:0}
+  .edu-item{margin-bottom:12px}
+  .edu-item .deg{font-weight:600;font-size:12.5px}
+  .edu-item .sub{color:var(--mut);font-size:11.5px}
+  .rail ul{margin:0;padding-left:15px}
+  .rail li{font-size:12px;margin-bottom:4px}
+
+  /* ---- Experience ---- */
+  .job{margin-bottom:15px;padding-bottom:2px}
+  .job .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .job .title{font-weight:600;font-size:13.5px}
+  .job .org{color:var(--accent);font-weight:500}
+  .job .when{color:var(--mut);font-size:11.5px;white-space:nowrap}
+  .job p{margin:3px 0 0;color:#3d3a33}
+  .job ul{margin:5px 0 0;padding-left:16px}
+  .job li{margin-bottom:3px;color:#3d3a33}
+  .earlier{color:var(--mut);font-size:12px;margin-top:2px}
+
+  /* ---- Project cards ---- */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:8px;
+    padding:10px 12px}
+  .pcard .pt{font-weight:600;font-size:12.5px;display:flex;align-items:center;gap:6px}
+  .pcard .badge{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--accent);background:var(--accent-soft);border-radius:10px;padding:1px 7px}
+  .pcard .pd{color:var(--mut);font-size:11.5px;margin-top:3px;line-height:1.4}
+  .pcard.wide{grid-column:1 / -1}
+  .group-label{font-size:11px;font-weight:600;color:var(--chip-ink);margin:14px 0 7px;
+    display:flex;align-items:center;gap:8px}
+  .group-label:first-child{margin-top:0}
+  .group-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .foot{padding:14px 40px 22px;color:var(--mut);font-size:10.5px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .foot a{color:var(--mut)}
+
+  /* ---- Print ---- */
+  @media print{
+    html,body{background:#fff;font-size:10.2px}
+    .page{margin:0;max-width:none;box-shadow:none;border-radius:0}
+    @page{size:A4;margin:11mm}
+    .name{font-size:31px}
+    header{padding:0 0 14px}
+    .rail{padding:16px 16px 0 0;background:none;border-right:1px solid var(--line)}
+    .main{padding:16px 0 0 22px}
+    .pcard{break-inside:avoid}
+    .job{break-inside:avoid}
+    .foot{padding:10px 0 0}
+    .page,.grid{background:#fff}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1 class="name">Sage Arbor<span class="dot">.</span></h1>
+    <div class="role">Hands-On AI Safety &amp; Healthcare AI &middot; PhD, Computational Biology</div>
+    <p class="tagline">PhD biochemist leading LLM red-teaming, evaluation, and clinical
+      AI at Duke Clinical Research Institute - a rare bridge between wet-lab-adjacent
+      science and applied AI safeguards, backed by a large body of shipped open-source work.</p>
+    <div class="contact">
+      <span><b>Charlotte, NC</b></span>
+      <span>+1 (317) 728-1662</span>
+      <span><a href="mailto:sagearbor@gmail.com">sagearbor@gmail.com</a></span>
+      <span><a href="https://github.com/sagearbor">github.com/sagearbor</a></span>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- LEFT RAIL -->
+    <aside class="rail">
+      <section>
+        <h2>Focus</h2>
+        <div class="chips">
+          <span class="chip">AI Safety</span>
+          <span class="chip">LLM Evals</span>
+          <span class="chip">Red-Teaming</span>
+          <span class="chip">Computational Biology</span>
+          <span class="chip">Biosecurity</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Skills</h2>
+        <div class="skillcat">AI / ML</div>
+        <div class="chips">
+          <span class="chip">LLM architectures</span>
+          <span class="chip">RAG</span>
+          <span class="chip">MoE</span>
+          <span class="chip">Agents / MCP</span>
+          <span class="chip">LLM-as-judge</span>
+          <span class="chip">Evals &amp; validation</span>
+          <span class="chip">Bias detection</span>
+        </div>
+        <div class="skillcat">Programming &amp; Data</div>
+        <div class="chips">
+          <span class="chip">Python</span>
+          <span class="chip">SQL</span>
+          <span class="chip">C++</span>
+          <span class="chip">Go</span>
+          <span class="chip">Solidity</span>
+          <span class="chip">Dashboards</span>
+          <span class="chip">UNIX</span>
+        </div>
+        <div class="skillcat">Science</div>
+        <div class="chips">
+          <span class="chip">Genomics</span>
+          <span class="chip">Protein / molecular design</span>
+          <span class="chip">Systems biology</span>
+          <span class="chip">Clinical &amp; EMR analysis</span>
+        </div>
+        <div class="skillcat">Leadership</div>
+        <div class="chips">
+          <span class="chip">PMP</span>
+          <span class="chip">Agile</span>
+          <span class="chip">Multi-site programs</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        <div class="edu-item">
+          <div class="deg">Ph.D. Biochemistry / Computational Biology</div>
+          <div class="sub">Washington University &middot; 2001-2008</div>
+        </div>
+        <div class="edu-item">
+          <div class="deg">B.S. Chemistry &amp; Biology</div>
+          <div class="sub">Duke University &middot; 1996-2000</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Recognition</h2>
+        <ul>
+          <li>Duke / Duke-NUS AI Symposium speaker (2024)</li>
+          <li>Quorum - Duke Tech Expo (2026)</li>
+          <li>PMP Certification (2021)</li>
+          <li>ASBMB Advocacy Fellow</li>
+          <li>Assoc. of Biochemistry Educators Scholar Award (2021)</li>
+        </ul>
+      </section>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <main class="main">
+      <section>
+        <h2>Profile</h2>
+        <p style="margin:0;color:#3d3a33">
+          Twenty-plus years turning science and data into decisions and shipped
+          systems - now focused on making AI safe. I lead LLM red-teaming,
+          evaluation, and validation at Duke CRI and build extensively in the open:
+          ensemble LLM-as-judge systems, adversarial verification, ML for biology,
+          and civic-tech infrastructure for a fairer AI transition.
+        </p>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+
+        <div class="job">
+          <div class="top">
+            <div><span class="title">Lead, AI Strategy &amp; Implementation</span> &middot; <span class="org">Duke University</span></div>
+            <div class="when">2021-Present</div>
+          </div>
+          <ul>
+            <li>Lead LLM red-teaming, validation, and bias detection; own the AI roadmap for a 1,000+ person organization.</li>
+            <li>Shipped/managed LLM validation engines ($5M), legal-redlining automation ($20M), and pharma chatbots - HIPAA-aligned throughout.</li>
+            <li>2024-2025 portfolio projected at $32M annual impact; speak publicly on LLM accuracy and bias.</li>
+          </ul>
+        </div>
+
+        <div class="job">
+          <div class="top">
+            <div><span class="title">Assistant Professor of Biochemistry</span> &middot; <span class="org">Marian University</span></div>
+            <div class="when">2013-2021</div>
+          </div>
+          <p>Research on health-outcomes databases and large-scale EMR data-mining; teaching, grant writing, and lab management.</p>
+        </div>
+
+        <div class="job">
+          <div class="top">
+            <div><span class="title">Manager / Sr. Research Associate</span> &middot; <span class="org">DuPont &amp; Pioneer</span></div>
+            <div class="when">2010-2012</div>
+          </div>
+          <p>Led 100+ staff across 8 global labs; ran the computational-biology group building SQL databases, dashboards, and genomic-data infrastructure.</p>
+        </div>
+
+        <div class="job">
+          <div class="top">
+            <div><span class="title">Computational Biologist III</span> &middot; <span class="org">Pfizer</span></div>
+            <div class="when">2008</div>
+          </div>
+          <p>Systems-biology modeling for clinical trials; pathway mapping and genome-chip (microarray) analysis.</p>
+        </div>
+
+        <div class="earlier"><b>Earlier:</b> S&amp;T Policy Fellow, National Academies of Sciences &middot; Technical Manager, Eurofins &middot; Graduate researcher (peptide synthesis &amp; molecular dynamics), Washington University.</div>
+      </section>
+
+      <section>
+        <h2>Selected Projects &amp; Open-Source Work</h2>
+        <div class="group-label">AI safety &amp; evaluation</div>
+        <div class="cards">
+          <div class="pcard">
+            <div class="pt">VERDICT <span class="badge">shipped</span></div>
+            <div class="pd">LLM-as-judge with a 5-model ensemble &amp; 2-of-5 veto logic, calibration/validation sets - counters single-model agreeableness bias.</div>
+          </div>
+          <div class="pcard">
+            <div class="pt">AIQ Eval Kit <span class="badge">shipped</span></div>
+            <div class="pd">Evidence-based competency-evaluation framework: rubric, time-decay, evidence multipliers, JSON schema &amp; aggregator.</div>
+          </div>
+          <div class="pcard wide">
+            <div class="pt">Proof-of-Done <span class="badge">shipped</span></div>
+            <div class="pd">Adversarial verification gate that runs an independent “refute” LLM-judge plus mutation testing to resist fabricated results.</div>
+          </div>
+        </div>
+
+        <div class="group-label">Civic tech - a fairer AI transition</div>
+        <div class="cards">
+          <div class="pcard">
+            <div class="pt">OpenLine + Personhood <span class="badge">early</span></div>
+            <div class="pd">Anonymous, Sybil-resistant infrastructure for payments, voting &amp; UBI (Solidity + Go, W3C Verifiable Credentials). Anchor vs. supplementary signals held in separate non-fungible buckets.</div>
+          </div>
+          <div class="pcard">
+            <div class="pt">AI-UBI Simulator <span class="badge">shipped</span></div>
+            <div class="pd">Month-by-month model of an AI economic transition across ~80 firms &amp; 128 countries - corporation-funded UBI, game-theory dynamics, user-uploadable equations checked by six causal anchor tests.</div>
+          </div>
+          <div class="pcard">
+            <div class="pt">Quorum <span class="badge">Duke Expo ’26</span></div>
+            <div class="pd">Multi-agent coordination platform for real-world problem-solving.</div>
+          </div>
+          <div class="pcard">
+            <div class="pt">WhipCongress <span class="badge">shipped</span></div>
+            <div class="pd">Predicts likely U.S. House/Senate votes for a bill and suggests changes to reach passage.</div>
+          </div>
+        </div>
+
+        <div class="group-label">Clinical &amp; scientific ML</div>
+        <div class="cards">
+          <div class="pcard">
+            <div class="pt">EoE Endoscopy Scorer <span class="badge">ML-for-bio &middot; WIP</span></div>
+            <div class="pd">DINOv2/ConvNeXt backbone &rarr; five CORN ordinal heads (one per EREFS feature) with Grad-CAM. Architecture built; training &amp; validation in progress.</div>
+          </div>
+          <div class="pcard">
+            <div class="pt">CT Dashboard <span class="badge">shipped</span></div>
+            <div class="pd">Clinical-trial dashboard with automated anomaly detection, SQL back end, and Sankey/3-D visualizations.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="foot">
+    <span>github.com/sagearbor &middot; full ~90-repo catalog in portfolio-inventory</span>
+    <span>References &amp; publications on request</span>
+  </div>
+
+</div>
+</body>
+</html>
