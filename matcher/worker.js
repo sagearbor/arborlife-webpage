@@ -26,7 +26,7 @@ HONESTY RULES (do not overstate):
 - "eoe" is a well-designed but UNVALIDATED ML-for-bio architecture (no trained model yet).
 - "whipCongress" is a rule-based prototype, not an ML/LLM system.
 - "personhood"/"openline" are early-stage (v0.1, not security-audited).
-- Mark a requirement "met" only when clearly supported, "partial" when adjacent/transferable, "gap" when not evidenced.
+- Score each requirement from 0.0 to 1.0: near 1.0 only when clearly supported, mid-range when adjacent or transferable, near 0.0 when not evidenced. Use nuanced values across the range, not just 0, 0.5, or 1.
 - If the role is outside Sage's background (for example visual art, trades, sales, or other unrelated fields), be blunt: set overall_fit to "weak", mark most aspects "gap", and state plainly that he is not a good fit. Never force a fit.
 
 Return a fair, specific analysis grounded in concrete evidence, not generic praise. Write plainly and do not use em-dashes.`;
@@ -43,10 +43,10 @@ const SCHEMA = {
         properties: {
           label: { type: "string" },
           requirement: { type: "string" },
-          status: { type: "string", enum: ["met", "partial", "gap"] },
+          score: { type: "number" },
           evidence: { type: "string" },
         },
-        required: ["label", "requirement", "status", "evidence"],
+        required: ["label", "requirement", "score", "evidence"],
         additionalProperties: false,
       },
     },
@@ -127,7 +127,7 @@ export default {
       messages: [
         {
           role: "user",
-          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label).\n\nROLE OR POSTING:\n${jobText}`,
+          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label). Also include a "score" from 0.0 to 1.0 for how well Sage meets it (0.0 to 0.33 = gap, 0.34 to 0.66 = partial, 0.67 to 1.0 = met); use the full range for nuance.\n\nROLE OR POSTING:\n${jobText}`,
         },
       ],
       output_config: { format: { type: "json_schema", schema: SCHEMA } },

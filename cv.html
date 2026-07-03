@@ -104,9 +104,13 @@
     .foot{padding:10px 0 0}
     .page,.grid{background:#fff}
   }
+  .pdf-btn{position:fixed;top:16px;right:16px;z-index:50;font:600 .85rem Inter,Arial,sans-serif;padding:.5rem .9rem;border-radius:22px;border:1px solid #c8503a;background:#c8503a;color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+  .pdf-btn:hover{filter:brightness(1.05)}
+  @media print{.pdf-btn{display:none!important}}
 </style>
 </head>
 <body>
+<button type="button" class="pdf-btn" onclick="window.print()">Save as PDF</button>
 <div class="page">
 
   <header>

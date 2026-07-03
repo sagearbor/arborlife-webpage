@@ -726,7 +726,16 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     wrap.insertBefore(v, wrap.firstChild);
     if(v.play) v.play().catch(function(){});
     requestAnimationFrame(function(){ v.style.opacity = '0.95'; });
-    setTimeout(function(){ if(v.parentNode){ v.style.opacity='0'; setTimeout(function(){ v.remove(); }, 500); } }, 8000);
+    var tip = document.createElement('div');
+    tip.className = 'egg-rings';
+    tip.style.cssText = 'position:absolute;left:50%;bottom:-8px;transform:translate(-50%,100%);z-index:5;width:240px;max-width:72vw;background:var(--surface-2,#14141b);color:var(--text,#eee);border:1px solid var(--line-2,#444);border-radius:12px;padding:.6rem .8rem;font:500 .8rem/1.45 Inter,sans-serif;box-shadow:0 14px 40px rgba(0,0,0,.45);opacity:0;transition:opacity .2s;pointer-events:none;text-align:center';
+    tip.innerHTML = '<b>Rotunda</b>, my megacity concept: designed to make life more walkable, cut CO2, and raise density by colocating homes with parks and outdoor resources.';
+    wrap.appendChild(tip);
+    function over(){ if(v.parentNode) tip.style.opacity = '1'; }
+    function out(){ tip.style.opacity = '0'; }
+    wrap.addEventListener('mouseenter', over);
+    wrap.addEventListener('mouseleave', out);
+    wrap.addEventListener('click', over);
   }
   function overlay(wpx, hpx){
     var c = document.createElement('canvas'); c.className = 'egg-rings';
