@@ -190,6 +190,10 @@ a.went-private{cursor:default;text-decoration:none}
 #contact h2 em{font-style:normal;color:var(--accent)}
 #contact p{color:var(--muted);max-width:34rem;margin:1rem auto 2rem}
 .contact-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+  .contact-email{margin-top:1.1rem;font-size:.9rem;color:var(--muted)}
+  .contact-email a{color:var(--accent);text-decoration:none}
+  .copy-btn{font:inherit;font-size:.78rem;margin-left:.4rem;padding:.15rem .6rem;border-radius:20px;border:1px solid var(--line-2);background:var(--surface);color:var(--text);cursor:pointer}
+  .copy-btn:hover{background:var(--surface-2)}
 .avail{display:inline-flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted);margin-bottom:1.4rem}
 .avail .pulse{width:8px;height:8px;border-radius:50%;background:var(--t-civic);box-shadow:0 0 0 0 var(--t-civic);animation:pulse 2.2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--t-civic) 55%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
@@ -490,6 +494,7 @@ footer .fine{color:var(--faint);font-size:.78rem}
     <a href="cv.html" target="_blank" rel="noopener" class="btn btn-ghost">Résumé</a>
     <a href="https://github.com/sagearbor" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
   </div>
+  <p class="contact-email">Prefer to just email? <a href="mailto:sagearbor+arborlife@gmail.com">sagearbor+arborlife@gmail.com</a> <button type="button" id="copyEmail" class="copy-btn">copy</button></p>
 </div></div></section>
 
 <footer>
@@ -643,6 +648,23 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
   });
 })();
 
+// Copyable contact email (mailto can dead-end if no mail client is set).
+(function () {
+  var b = document.getElementById('copyEmail');
+  if (!b) return;
+  b.addEventListener('click', function () {
+    var email = 'sagearbor+arborlife@gmail.com';
+    function done() { b.textContent = 'copied!'; setTimeout(function () { b.textContent = 'copy'; }, 1500); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(email).then(done).catch(fallback);
+    } else { fallback(); }
+    function fallback() {
+      var t = document.createElement('textarea'); t.value = email; document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); done(); } catch (e) {} document.body.removeChild(t);
+    }
+  });
+})();
+
 // EASTER EGG: click the accent dot after "Sage Arbor" for a little orbital show (nod to the rotating megacity).
 (function () {
   var dot = document.querySelector('.brand .dot');
@@ -651,7 +673,6 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
   dot.addEventListener('click', function (e) {
     e.preventDefault(); e.stopPropagation();
     if (document.getElementById('eggCanvas')) return;
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var c = document.createElement('canvas');
     c.id = 'eggCanvas';
     c.style.cssText = 'position:fixed;inset:0;z-index:9999;cursor:pointer;';
