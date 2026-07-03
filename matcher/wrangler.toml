@@ -1,0 +1,9 @@
+name = "arborlife-matcher"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# The Anthropic API key is NOT stored here. It is a Worker *secret*, set once with:
+#   wrangler secret put ANTHROPIC_API_KEY
+# (or in the Cloudflare dashboard: Workers → this worker → Settings → Variables →
+#  add a *Secret* named ANTHROPIC_API_KEY). It is encrypted at rest and never
+#  appears in this repo, the deploy logs, or the browser.

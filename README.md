@@ -1,35 +1,33 @@
-# ArborLife
+# ArborLife — sagearbor.dev
 
-A personal/professional website to showcase commercial solutions, open source contributions (especially AI alignment and collaboration tools), and proof-of-concept projects.
+The public face of Sage Arbor's work: AI strategy, safety & evaluation, and
+applied ML — for hiring managers and consulting clients alike.
 
-## Vision
+## The site
 
-ArborLife is the public face of work that spans three areas:
+**`index.html`** is the live, self-contained site (no build step, no
+dependencies — just open it or serve it statically).
 
-- **Commercial Solutions** — Enterprise AI products and consulting engagements that create real business value
-- **Open Source & AI Alignment** — Tools, frameworks, and contributions that promote collaborative, responsible AI development
-- **Proof of Concepts** — Experimental builds exploring what's possible at the frontier
+- **Dark by default**, with a one-click toggle to a warm **light / editorial**
+  theme (preference persists via `localStorage`).
+- Sections: hero → services ("how I can help") → signature work → selected work
+  across four focus areas → about → contact.
+- Serif display type (Fraunces) + Inter; subtle motion; fully responsive;
+  `prefers-reduced-motion` aware.
+- Project descriptions are deliberately **accurate** — research/prototype work is
+  labeled as such; proprietary work shows as non-linked "Private / Research"
+  cards (social proof without broken links).
 
-The site should feel modern, sleek, and engaging — a place that communicates both technical depth and human purpose.
+## Run / deploy
 
-## Design Exploration (./tmp/)
+```bash
+# view locally
+open index.html            # or: python3 -m http.server
 
-Three design directions are in `tmp/` for comparison. Open each HTML file in a browser to see the full mockup:
+# deploy: GitHub Pages (Settings → Pages → main branch) serves index.html
+```
 
-| Mockup | File | Vibe |
-|--------|------|------|
-| **Neural Garden** | `tmp/mockup-1-neural-garden.html` | Dark, organic + tech. Particle network animation, green/gold palette, tree metaphors. Sophisticated and alive. |
-| **Clean Showcase** | `tmp/mockup-2-clean-showcase.html` | Light, minimal, professional. Serif headings, whitespace-driven, card-based. Trustworthy and approachable. |
-| **Bold Hub** | `tmp/mockup-3-bold-hub.html` | Dark with vibrant gradients (violet/cyan/coral). Glass-morphism, bold typography. High-energy innovation lab feel. |
+## History
 
-### Key decisions to make
-
-- **Theme**: Dark vs. light? Or dark with option to toggle?
-- **Personality**: Sophisticated/organic (Neural Garden) vs. clean/professional (Clean Showcase) vs. bold/energetic (Bold Hub)?
-- **Content priorities**: Which section matters most — the portfolio grid, the philosophy/values, or the three-pillar categorization?
-- **Interactivity level**: Subtle animations only, or lean into particle effects and dynamic elements?
-- **Tech stack**: Static HTML/CSS, or a framework (Next.js, Astro, etc.)?
-
-## Setup (TBD)
-
-Tech stack and build tooling to be decided after design direction is chosen.
+Earlier design explorations live in `mockups/` (neural-garden, clean-showcase,
+bold-hub, and the 4-grid hub that this redesign builds on).
