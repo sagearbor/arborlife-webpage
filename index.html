@@ -219,8 +219,8 @@ a.went-private{cursor:default;text-decoration:none}
 .ms{font-weight:700;white-space:nowrap;text-transform:capitalize}
 .ms-met{color:var(--t-civic)}.ms-partial{color:var(--t-ent)}.ms-gap{color:var(--accent)}
 .match-note{color:var(--faint);font-size:.78rem;margin-top:.8rem}
-  .match-rows{margin-top:.9rem;display:flex;flex-direction:column}
-  .match-row{display:grid;grid-template-columns:46px 1fr;gap:.15rem .6rem;align-items:baseline;padding:.55rem .1rem;border-top:1px solid var(--line)}
+  .match-drows{margin-top:.9rem;display:flex;flex-direction:column}
+  .match-drow{display:grid;grid-template-columns:46px 1fr;gap:.15rem .6rem;align-items:baseline;padding:.55rem .1rem;border-top:1px solid var(--line)}
   .mr-score{font-weight:800;font-size:.92rem}
   .mr-label{font-weight:700;font-size:.9rem}
   .mr-ev{grid-column:2;font-size:.82rem;color:var(--muted);line-height:1.45}
@@ -503,7 +503,7 @@ footer .fine{color:var(--faint);font-size:.78rem}
   <p>Whether it's an AI system that has to be trustworthy, a hard research problem, or a bold idea for the public good - I'd love to hear it.</p>
   <div class="contact-btns">
     <a href="mailto:sagearbor+arborlife@gmail.com" class="btn btn-primary">Email me</a>
-    <a href="cv.html" target="_blank" rel="noopener" class="btn btn-ghost">Résumé</a>
+    <a href="cv.html" target="_blank" rel="noopener" class="btn btn-ghost">Resumé</a>
     <a href="https://github.com/sagearbor" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
     <a href="#match" class="btn btn-ai">AI match</a>
   </div>
@@ -590,10 +590,10 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     if (A.length) {
       if (useRadar) { html += '<canvas id="matchRadar" style="width:100%;height:auto"></canvas>'; }
       else { html += '<canvas id="matchChart" style="width:100%;height:auto;cursor:pointer"></canvas><p id="matchDetail" class="match-note" style="min-height:1.1em"></p>'; }
-      html += '<div class="match-rows">';
+      html += '<div class="match-drows">';
       A.forEach(function (a) {
         var v = mScore(a), band = v >= 0.67 ? 'met' : v >= 0.34 ? 'partial' : 'gap';
-        html += '<div class="match-row mr-' + band + '"><span class="mr-score">' + Math.round(v * 100) + '%</span><span class="mr-label">' + esc(a.label || a.requirement || '') + '</span><span class="mr-ev">' + esc(a.evidence || '') + '</span></div>';
+        html += '<div class="match-drow mr-' + band + '"><span class="mr-score">' + Math.round(v * 100) + '%</span><span class="mr-label">' + esc(a.label || a.requirement || '') + '</span><span class="mr-ev">' + esc(a.evidence || '') + '</span></div>';
       });
       html += '</div>';
     }
@@ -821,14 +821,14 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     wrap.style.position = 'relative';
     var img = wrap.querySelector('img'); if(img){ img.style.position='relative'; img.style.zIndex='1'; }
     var c = document.createElement('canvas'); c.className = 'egg-rings';
-    c.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    c.style.cssText = 'position:absolute;left:-12%;top:-12%;width:124%;height:124%;z-index:0;pointer-events:none;';
     wrap.insertBefore(c, wrap.firstChild);
-    var DPR = Math.min(window.devicePixelRatio || 1, 2), W = wrap.clientWidth, H = wrap.clientHeight;
+    var DPR = Math.min(window.devicePixelRatio || 1, 2), W = wrap.clientWidth * 1.24, H = wrap.clientHeight * 1.24;
     c.width = W * DPR; c.height = H * DPR;
     var ctx = c.getContext('2d'); ctx.scale(DPR, DPR);
-    var col = accent(), cx = W / 2, cyc = H * 0.44, base = Math.min(W, H) * 0.42;
+    var col = accent(), cx = W / 2, cyc = H * 0.48, base = Math.min(W, H) * 0.48;
     var names = ['VERDICT', 'UBI sim', 'personhood', 'whipCongress', 'Rotunda', 'VaxInsight', 'AIQ', 'eoe'], n = names.length, pts = [];
-    for (var i = 0; i < n; i++) { var a = i * 2 * Math.PI / n - Math.PI / 2, rr = (i % 2 ? 0.86 : 0.56) * base; pts.push({ x: cx + Math.cos(a) * rr, y: cyc + Math.sin(a) * rr, lx: cx + Math.cos(a) * (rr + 12), ly: cyc + Math.sin(a) * (rr + 12), nm: names[i] }); }
+    for (var i = 0; i < n; i++) { var a = i * 2 * Math.PI / n - Math.PI / 2, rr = (i % 2 ? 0.96 : 0.7) * base; pts.push({ x: cx + Math.cos(a) * rr, y: cyc + Math.sin(a) * rr, lx: cx + Math.cos(a) * (rr + 14), ly: cyc + Math.sin(a) * (rr + 14), nm: names[i] }); }
     var start = performance.now();
     (function f(t){
       if (!c.parentNode) return;
@@ -840,8 +840,8 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
       pts.forEach(function (pt, i) {
         if (i >= shown) return;
         var tw = 0.6 + 0.4 * Math.sin(el * 0.004 + i);
-        ctx.globalAlpha = 0.9; ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.3 + tw, 0, 7); ctx.fillStyle = col; ctx.fill();
-        ctx.globalAlpha = 0.92; ctx.fillStyle = '#ece6df'; ctx.font = '700 9px Inter, sans-serif';
+        ctx.globalAlpha = 0.9; ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.6 + tw, 0, 7); ctx.fillStyle = col; ctx.fill();
+        ctx.globalAlpha = 0.95; ctx.fillStyle = '#ece6df'; ctx.font = '700 10px Inter, sans-serif';
         ctx.fillText(pt.nm, pt.lx, pt.ly);
       });
       ctx.globalAlpha = 1;
