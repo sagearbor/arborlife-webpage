@@ -14,7 +14,7 @@ const MAX_INPUT_CHARS = 40000; // lenient cap (~10k words); still bounds runaway
 const SAGE_PROFILE = `You are analyzing how well ONE candidate — Sage Arbor — matches a job posting.
 
 CANDIDATE PROFILE
-- PhD Biochemistry / Computational Biology (Washington University); B.S. Chemistry & Biology (Duke). 20+ years.
+- PhD Biochemistry / Computational Biology (Washington University); B.S. Chemistry & Biology (Duke). 25+ years.
 - Currently Lead, AI Strategy & Implementation at Duke Clinical Research Institute: LLM architectures (RAG, MoE, agents), red-teaming, LLM validation/evals, clinical compliance; owns a $32M AI portfolio for a 1,000+ person org.
 - Programming: Python, SQL, C++, Go, Solidity; dashboards and data pipelines.
 - Science: genomics, protein/molecular design, systems biology, clinical & EMR data analysis.
@@ -41,11 +41,12 @@ const SCHEMA = {
       items: {
         type: "object",
         properties: {
+          label: { type: "string" },
           requirement: { type: "string" },
           status: { type: "string", enum: ["met", "partial", "gap"] },
           evidence: { type: "string" },
         },
-        required: ["requirement", "status", "evidence"],
+        required: ["label", "requirement", "status", "evidence"],
         additionalProperties: false,
       },
     },
@@ -126,7 +127,7 @@ export default {
       messages: [
         {
           role: "user",
-          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest.\n\nROLE OR POSTING:\n${jobText}`,
+          content: `The text below is a role, a job title, or a job description. If it is short, first infer that role's typical requirements, then judge how well Sage fits. Be specific and honest. For each aspect include a "label": a 1 to 2 word tag for the requirement (used as a chart bar label).\n\nROLE OR POSTING:\n${jobText}`,
         },
       ],
       output_config: { format: { type: "json_schema", schema: SCHEMA } },
