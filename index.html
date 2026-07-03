@@ -583,33 +583,37 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     out.innerHTML = html;
     if (A.length) drawMatchChart(A);
   }
-  function mStatVal(s){ return s === 'met' ? 1 : s === 'partial' ? 0.62 : 0.28; }
   function mCssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-  function mStatCol(s){ return (s === 'met' ? mCssVar('--t-civic') : s === 'partial' ? mCssVar('--t-ent') : mCssVar('--accent')) || '#e0805c'; }
+  function mScore(a){ if (typeof a.score === 'number') return Math.max(0, Math.min(1, a.score)); var s = (a.status || '').toLowerCase(); return s === 'met' ? 0.85 : s === 'partial' ? 0.5 : 0.2; }
+  function mBandCol(v){ return (v >= 0.67 ? mCssVar('--t-civic') : v >= 0.34 ? mCssVar('--t-ent') : mCssVar('--accent')) || '#e0805c'; }
   function drawMatchChart(A){
     var c = document.getElementById('matchChart'); if (!c) return;
-    var DPR = Math.min(window.devicePixelRatio || 1, 2), w = 600, h = 280;
-    c.width = w * DPR; c.height = h * DPR;
+    A = A.slice().sort(function (a, b) { return mScore(b) - mScore(a); });
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var cssW = c.clientWidth || 600, cssH = 300;
+    c.style.height = cssH + 'px';
+    c.width = cssW * DPR; c.height = cssH * DPR;
     var ctx = c.getContext('2d'); ctx.scale(DPR, DPR);
-    var padL = 8, padR = 8, padTop = 18, padBot = 44, N = A.length, plotW = w - padL - padR, plotH = h - padTop - padBot, base = padTop + plotH, gap = plotW / N, bw = Math.min(gap * 0.62, 56);
+    ctx.clearRect(0, 0, cssW, cssH);
+    var padL = 6, padR = 6, padTop = 20, padBot = 96, N = A.length, plotW = cssW - padL - padR, plotH = cssH - padTop - padBot, base = padTop + plotH, gap = plotW / N, bw = Math.min(gap * 0.6, 46);
     var mut = mCssVar('--muted') || '#999', txt = mCssVar('--text') || '#eee';
     var bars = [];
-    ctx.textAlign = 'center';
     A.forEach(function (a, i) {
-      var s = (a.status || '').toLowerCase(), x = padL + gap * i + gap / 2, bh = plotH * mStatVal(s), y = base - bh, col = mStatCol(s), x0 = x - bw / 2, r = 6;
+      var v = mScore(a), x = padL + gap * i + gap / 2, bh = plotH * v, y = base - bh, col = mBandCol(v), x0 = x - bw / 2, r = 5;
       ctx.fillStyle = col; ctx.beginPath();
       ctx.moveTo(x0, base); ctx.lineTo(x0, y + r); ctx.quadraticCurveTo(x0, y, x0 + r, y); ctx.lineTo(x0 + bw - r, y); ctx.quadraticCurveTo(x0 + bw, y, x0 + bw, y + r); ctx.lineTo(x0 + bw, base); ctx.closePath(); ctx.fill();
-      var lab = (a.label || (a.requirement || '').split(' ').slice(0, 2).join(' '));
-      ctx.fillStyle = mut; ctx.font = '600 11px Inter, sans-serif'; ctx.fillText(lab.length > 13 ? lab.slice(0, 12) + '.' : lab, x, base + 16);
-      ctx.fillStyle = txt; ctx.font = '700 10px Inter, sans-serif'; ctx.fillText(s, x, y - 7);
-      bars.push({ x0: x0, x1: x0 + bw, a: a });
+      ctx.fillStyle = txt; ctx.font = '700 11px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillText(Math.round(v * 100) + '%', x, y - 6);
+      ctx.save(); ctx.translate(x, base + 8); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillStyle = mut; ctx.font = '600 11px Inter, sans-serif';
+      var lab = a.label || (a.requirement || ''); if (lab.length > 20) lab = lab.slice(0, 19) + '.';
+      ctx.fillText(lab, 0, 0); ctx.restore();
+      bars.push({ x0: x0, x1: x0 + bw, a: a, v: v });
     });
-    ctx.strokeStyle = mCssVar('--line') || 'rgba(255,255,255,.12)'; ctx.beginPath(); ctx.moveTo(padL, base); ctx.lineTo(w - padR, base); ctx.stroke();
+    ctx.strokeStyle = mCssVar('--line') || 'rgba(255,255,255,.12)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(padL, base); ctx.lineTo(cssW - padR, base); ctx.stroke();
     c.onclick = function (e) {
-      var rect = c.getBoundingClientRect(), mx = (e.clientX - rect.left) / rect.width * w, hit = null;
+      var rect = c.getBoundingClientRect(), mx = (e.clientX - rect.left) / rect.width * cssW, hit = null;
       bars.forEach(function (b) { if (mx >= b.x0 - 6 && mx <= b.x1 + 6) hit = b; });
       var det = document.getElementById('matchDetail');
-      if (hit && det) det.innerHTML = '<b>' + esc(hit.a.requirement || hit.a.label || '') + '</b> (' + esc(hit.a.status || '') + '): ' + esc(hit.a.evidence || '');
+      if (hit && det) det.innerHTML = '<b>' + esc(hit.a.requirement || hit.a.label || '') + '</b> (' + Math.round(hit.v * 100) + '%): ' + esc(hit.a.evidence || '');
     };
   }
   btn.addEventListener('click', function () {
@@ -724,6 +728,59 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     requestAnimationFrame(function(){ v.style.opacity = '0.95'; });
     setTimeout(function(){ if(v.parentNode){ v.style.opacity='0'; setTimeout(function(){ v.remove(); }, 500); } }, 8000);
   }
+  function overlay(wpx, hpx){
+    var c = document.createElement('canvas'); c.className = 'egg-rings';
+    c.style.cssText = 'position:fixed;left:50%;top:15%;transform:translateX(-50%);z-index:9999;pointer-events:none;width:' + wpx + 'px;height:' + hpx + 'px;max-width:92vw;';
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = wpx * DPR; c.height = hpx * DPR;
+    var ctx = c.getContext('2d'); ctx.scale(DPR, DPR);
+    document.body.appendChild(c);
+    return { c: c, ctx: ctx, w: wpx, h: hpx };
+  }
+  function windmill(){
+    clearAll();
+    var o = overlay(380, 300), ctx = o.ctx, W = o.w, H = o.h, col = accent();
+    var ground = H * 0.86, bricks = [], bw = 26, bh = 13, wallX = W * 0.12;
+    for (var r = 0; r < 6; r++) { var off = (r % 2) * bw / 2; for (var i = 0; i < 4; i++) { bricks.push({ x: wallX + off + i * (bw + 2), y: ground - (r + 1) * (bh + 2), vx: 0, vy: 0, rot: 0, vr: 0, fell: false }); } }
+    var wx = W * 0.72, wy = H * 0.4, start = performance.now(), knock = 800, dur = 7000;
+    (function f(t){
+      if (!o.c.parentNode) return;
+      var el = t - start; ctx.clearRect(0, 0, W, H);
+      ctx.globalAlpha = 0.4; ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, ground); ctx.lineTo(W, ground); ctx.stroke(); ctx.globalAlpha = 1;
+      bricks.forEach(function (b) {
+        if (el > knock && !b.fell) { b.vx = 1 + Math.random() * 2.2; b.vy = -Math.random() * 2; b.vr = (Math.random() - 0.15) * 0.28; b.fell = true; }
+        if (b.fell) { b.vy += 0.32; b.x += b.vx; b.y += b.vy; b.rot += b.vr; if (b.y + bh > ground) { b.y = ground - bh; b.vy *= -0.22; b.vx *= 0.6; b.vr *= 0.5; } }
+        ctx.save(); ctx.translate(b.x + bw / 2, b.y + bh / 2); ctx.rotate(b.rot); ctx.globalAlpha = 0.9; ctx.fillStyle = col; ctx.fillRect(-bw / 2, -bh / 2, bw - 1, bh - 1); ctx.restore();
+      });
+      ctx.globalAlpha = 1; ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(wx, ground); ctx.lineTo(wx, wy); ctx.stroke();
+      var spin = el * 0.004;
+      for (var k = 0; k < 4; k++) { var a = spin + k * Math.PI / 2; ctx.beginPath(); ctx.moveTo(wx, wy); ctx.lineTo(wx + Math.cos(a) * 58, wy + Math.sin(a) * 58); ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(wx, wy, 5, 0, 7); ctx.fillStyle = col; ctx.fill();
+      if (el < dur) requestAnimationFrame(f); else o.c.remove();
+    })(start);
+  }
+  function constellation(){
+    clearAll();
+    var o = overlay(420, 300), ctx = o.ctx, W = o.w, H = o.h, col = accent();
+    var names = ['VERDICT', 'UBI sim', 'personhood', 'whipCongress', 'Rotunda', 'VaxInsight', 'AIQ', 'eoe'], n = names.length, pts = [];
+    for (var i = 0; i < n; i++) { var a = i * 2 * Math.PI / n + 0.4, rr = (i % 2 ? 0.9 : 0.55) * Math.min(W, H) * 0.42; pts.push({ x: W / 2 + Math.cos(a) * rr, y: H * 0.46 + Math.sin(a) * rr * 0.8, nm: names[i] }); }
+    var start = performance.now(), dur = 6500;
+    (function f(t){
+      if (!o.c.parentNode) return;
+      var el = t - start, p = Math.min(el / dur, 1), fade = p < 0.1 ? p / 0.1 : (p > 0.85 ? (1 - p) / 0.15 : 1);
+      ctx.clearRect(0, 0, W, H);
+      var edges = Math.floor(p * n * 1.4);
+      ctx.strokeStyle = col; ctx.lineWidth = 1;
+      for (var e = 0; e < edges && e < n; e++) { ctx.globalAlpha = 0.32 * fade; ctx.beginPath(); ctx.moveTo(pts[e].x, pts[e].y); ctx.lineTo(pts[(e + 2) % n].x, pts[(e + 2) % n].y); ctx.stroke(); }
+      pts.forEach(function (pt, i) {
+        var tw = 0.6 + 0.4 * Math.sin(el * 0.004 + i);
+        ctx.globalAlpha = fade * (0.7 + 0.3 * tw); ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.6 + tw, 0, 7); ctx.fillStyle = col; ctx.fill();
+        ctx.globalAlpha = fade * 0.8; ctx.fillStyle = '#cfc8c2'; ctx.font = '600 9px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(pt.nm, pt.x, pt.y - 8);
+      });
+      ctx.globalAlpha = 1;
+      if (p < 1) requestAnimationFrame(f); else o.c.remove();
+    })(start);
+  }
   var items = [
     say('<span style="font-size:1.6rem">42?</span><br><span style="font-size:.78rem;opacity:.6">the answer, probably</span>'),
     quote('The saddest aspect of life right now is that science gathers knowledge faster than society gathers wisdom.', 'Isaac Asimov'),
@@ -731,6 +788,7 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     quote("I would rather have questions that can't be answered than answers that can't be questioned.", 'Richard Feynman'),
     say('<span style="font-size:.95rem">Off the clock: woodworking and building furniture.</span>'),
     quote('When the wind of change blows, some build walls while others build windmills.', 'Chinese proverb'),
+    windmill,
     quote('A society grows great when old people plant trees in whose shade they shall never sit.', 'Greek proverb'),
     say('Built by a human, shipped with an AI. <a href="#match" style="color:var(--accent);text-decoration:none">meet it &#9656;</a>'),
     quote('Try not to become a person of success, but rather a person of value.', 'Albert Einstein'),
@@ -739,6 +797,7 @@ var MATCHER_ENDPOINT = "https://arborlife-matcher.sagearbor.workers.dev";
     say('<span style="font-size:.95rem">Also: wrestling, martial arts, and arguing about ethics.</span>'),
     quote('Act as if what you do makes a difference. It does.', 'William James'),
     say('<span style="font-size:.9rem;opacity:.85">Currently: rebuilding VERDICT, learning mechanistic interpretability, and pointing an AI at my own resume.</span>'),
+    constellation,
     quote('Every person is guilty of all the good they did not do.', 'Voltaire'),
     quote('The greatest threat to our planet is the belief that someone else will save it.', 'Robert Swan'),
     say('<span class="serif" style="font-size:1.05rem;line-height:1.6">models learn our world,<br>we should learn what they learned,<br>before we trust them</span>'),
